@@ -95,7 +95,7 @@
     .view-container { 
       flex: 1; position: relative; overflow: hidden; padding: 16px 16px calc(88px + env(safe-area-inset-bottom)); 
       display: flex; flex-direction: column; min-height: 0;
-      touch-action: manipulation;
+      touch-action: pan-y;
     }
     
     .tab-content { 
@@ -104,22 +104,19 @@
       flex: 1; flex-direction: column; min-height: 0; 
     }
     .tab-content.active { display: flex; opacity: 1; transform: translateY(0); }
+    .tab-content.tab-enter-left { animation: slideFromLeft 0.32s cubic-bezier(0.22, 1, 0.36, 1) backwards; }
+    .tab-content.tab-enter-right { animation: slideFromRight 0.32s cubic-bezier(0.22, 1, 0.36, 1) backwards; }
 
     /* DAILY VIEW STYLES */
     #view-daily { display: none; flex-direction: column; touch-action: pan-y; }
     #view-daily.active { display: flex; }
 
-    .layout-switch { display: flex; background: #eef2f7; border-radius: 14px; padding: 3px; gap: 3px; margin-bottom: 12px; flex-shrink: 0; }
-    :root[data-theme="dark"] .layout-switch { background: #182235; }
-    .layout-seg { flex: 1; padding: 8px 0; border: none; border-radius: 11px; font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 900; color: var(--text-muted); background: transparent; cursor: pointer; transition: background 0.2s, color 0.2s; -webkit-tap-highlight-color: transparent; }
-    .layout-seg:active { transform: scale(0.97); }
-    .layout-seg.active { background: var(--accent); color: #fff; box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35); }
-
-    #daily-render-area.stack { gap: 12px; scroll-snap-type: y proximity; scroll-behavior: smooth; padding-bottom: 8px; }
-    #daily-render-area.stack .card.today, #daily-render-area.stack .upcoming-card { scroll-snap-align: center; flex-shrink: 0; }
-    #daily-render-area.stack .card.today { animation: popIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) backwards; }
+    #daily-render-area { gap: 12px; scroll-snap-type: y proximity; scroll-behavior: smooth; padding-bottom: 8px; }
+    #daily-render-area .card.today, #daily-render-area .upcoming-card { scroll-snap-align: center; flex-shrink: 0; }
+    #daily-render-area .card.today { animation: popIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards; }
     .upcoming-card.scroll-past { opacity: 0.72; }
-    .upcoming-card.scroll-tap { transform: scale(1.06); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18); }
+    .upcoming-card.tv-expanding { transform: scale(1.045) translateY(-4px); box-shadow: 0 14px 32px rgba(0, 0, 0, 0.16); z-index: 2; }
+    .card.today.tv-collapsing { transform: scale(0.96) translateY(6px); opacity: 0.4; }
     .scroll-note { font-size: 11px; font-weight: 900; color: #d97706; margin-left: 2px; }
 
     /* Today Pill */
@@ -174,8 +171,9 @@
     }
 
     .card-label { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
-    .card-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid rgba(0,0,0,0.08); padding-bottom: 12px; }
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; border-bottom: 1px solid rgba(0,0,0,0.08); padding-bottom: 12px; }
     :root[data-theme="dark"] .card-header { border-bottom-color: rgba(148, 163, 184, 0.18); }
+    .card-header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0; }
     .date-num { font-size: 30px; font-weight: 900; color: var(--text-main); display: block; line-height: 1.1; }
     .day-name { font-size: 15px; color: var(--text-muted); font-weight: 800; }
     
@@ -223,7 +221,7 @@
     .hours-label { font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
     .hours-value { font-size: 13px; font-weight: 900; color: var(--accent); text-align: right; }
 
-    .card-note-badge { display: inline-flex; align-items: center; gap: 5px; background: #0f172a; color: white; padding: 5px 10px; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); margin-top: 4px; }
+    .card-note-badge { display: inline-flex; align-items: center; gap: 5px; background: #0f172a; color: white; padding: 5px 10px; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); max-width: 100%; text-align: center; }
     :root[data-theme="dark"] .card-note-badge { background: #1e293b; color: #e2e8f0; }
     .daily-note { padding: 10px 12px; background: rgba(254, 249, 195, 0.95); border-radius: 14px; border: 2px dashed #fde047; font-size: 13px; font-weight: 800; color: #713f12; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
     :root[data-theme="dark"] .daily-note { background: rgba(253, 230, 138, 0.12); border-color: #a16207; color: #fde68a; }
@@ -237,22 +235,7 @@
     :root[data-theme="dark"] .expired-sub { color: #fbbf24; }
     .expired-cta { display: inline-block; background: #d97706; color: white; padding: 9px 16px; border-radius: 12px; font-size: 13px; font-weight: 900; }
 
-    /* UPCOMING DAYS STYLES */
-    .upcoming-container {
-      margin-top: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .upcoming-header {
-      font-family: 'Inter', sans-serif;
-      font-size: 11px;
-      font-weight: 900;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-left: 4px;
-    }
+    /* UPCOMING DAYS STYLES (mini day cards in All Days view) */
     .upcoming-card {
       padding: 10px 14px;
       border-radius: 18px;
@@ -339,7 +322,7 @@
     :root[data-theme="dark"] .cal-cell.type-off { border-color: #86efac; background: #0f2a1c; }
     :root[data-theme="dark"] .cal-cell.type-post-off { border-color: #334155; background: #182235; }
 
-    /* BOTTOM NAV WITH ARROWS */
+    /* BOTTOM NAV */
     .bottom-nav { 
       position: absolute; 
       bottom: calc(12px + env(safe-area-inset-bottom)); 
@@ -360,29 +343,6 @@
       border: 1px solid rgba(255,255,255,0.8); 
     }
     :root[data-theme="dark"] .bottom-nav { border-color: rgba(148, 163, 184, 0.12); box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45); }
-    
-    .nav-arrow-btn {
-      background: transparent;
-      border: none;
-      font-size: 24px;
-      font-weight: 900;
-      color: var(--text-main);
-      width: 36px;
-      height: 48px;
-      border-radius: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: background 0.15s ease, transform 0.15s ease;
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
-      flex-shrink: 0;
-    }
-    .nav-arrow-btn:active {
-      transform: scale(0.88);
-      background: rgba(0, 0, 0, 0.06);
-    }
 
     .nav-item { 
       flex: 1; 
@@ -488,6 +448,8 @@
     /* ---- ANIMATIONS ---- */
     @keyframes fadeDown { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: none; } }
     @keyframes fadeUp   { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+    @keyframes slideFromLeft  { from { opacity: 0.35; transform: translateX(26px); } to { opacity: 1; transform: none; } }
+    @keyframes slideFromRight { from { opacity: 0.35; transform: translateX(-26px); } to { opacity: 1; transform: none; } }
     @keyframes popIn    { from { opacity: 0; transform: scale(0.88) translateY(6px); } to { opacity: 1; transform: none; } }
     @keyframes popScale { from { opacity: 0; transform: scale(0.7); } to { opacity: 1; transform: none; } }
     @keyframes ringPulse { 0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.45); } 70% { box-shadow: 0 0 0 9px rgba(255,255,255,0); } 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); } }
@@ -533,16 +495,22 @@
       #print-area, #print-area * { visibility: visible; }
       #print-area { display: block !important; position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 0; }
       .print-page { page-break-after: always; padding: 2px 2px; font-family: 'Inter', 'Nunito', sans-serif; color: #1e293b; }
-      .print-header { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 3px solid #0284c7; padding-bottom: 8px; margin-bottom: 14px; }
-      .print-title { font-size: 26px; font-weight: 900; color: #0f172a; }
-      .print-pageno { font-size: 13px; font-weight: 800; color: #64748b; }
-      .print-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-      .print-table th { background: #f1f5f9; color: #334155; text-align: left; padding: 9px 8px; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.4px; border: 1px solid #e2e8f0; }
-      .print-table td { border: 1px solid #e2e8f0; padding: 9px 9px; font-weight: 600; }
+      .print-header { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; border-bottom: 3px solid #0284c7; padding-bottom: 10px; margin-bottom: 12px; }
+      .print-title { font-size: 28px; font-weight: 900; color: #0f172a; letter-spacing: -0.3px; }
+      .print-sub { font-size: 12.5px; font-weight: 800; color: #64748b; margin-top: 2px; }
+      .print-pageno { font-size: 12.5px; font-weight: 800; color: #64748b; text-align: right; line-height: 1.5; }
+      .print-legend { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+      .pl-chip { font-family: 'Inter', sans-serif; font-size: 11.5px; font-weight: 800; padding: 4px 12px; border-radius: 999px; border: 1.5px solid; letter-spacing: 0.3px; }
+      .print-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 13px; }
+      .print-table th { background: #f1f5f9; color: #334155; text-align: left; padding: 10px 10px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.4px; border: 1px solid #e2e8f0; white-space: nowrap; }
+      .print-table td { border: 1px solid #e2e8f0; padding: 10px 9px; font-weight: 600; vertical-align: middle; }
       .print-table tr.weekend td { background: #f8fafc; }
-      .pc-day { font-weight: 900; font-size: 13px; text-align: center; }
-      .pc-week { font-weight: 800; text-align: center; color: #64748b; }
-      .pc-type { font-weight: 800; border-radius: 8px; text-align: center; font-size: 11.5px; white-space: nowrap; }
+      .print-table tr.today td { background: #dbeafe; }
+      .print-table tr.today .pc-day { box-shadow: inset 0 0 0 2px #0284c7; border-radius: 8px; }
+      .pc-day { font-weight: 900; font-size: 15px; text-align: center; }
+      .pc-weekday { font-weight: 800; text-align: center; color: #475569; font-size: 12.5px; }
+      .pc-type { font-weight: 800; border-radius: 8px; text-align: center; font-size: 12.5px; white-space: nowrap; padding: 6px 8px; overflow: hidden; text-overflow: ellipsis; }
+      .pc-name { font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
       .print-footer { margin-top: 12px; font-size: 12px; color: #94a3b8; font-weight: 700; }
     }
     @page { size: A4 landscape; margin: 12mm; }
@@ -589,12 +557,8 @@
 
     <div class="view-container">
       
-      <!-- DAILY VIEW -->
+      <!-- DAILY VIEW (All Days) -->
       <div id="view-daily" class="tab-content active">
-        <div class="layout-switch" id="layout-switch">
-          <button class="layout-seg active" data-mode="swipe" onclick="setNavMode('swipe')">◂▸ Swipe</button>
-          <button class="layout-seg" data-mode="stack" onclick="setNavMode('stack')">☰ All Days</button>
-        </div>
         <div id="daily-render-area"></div>
       </div>
 
@@ -615,16 +579,10 @@
 
     </div>
 
-    <!-- BOTTOM NAV WITH INTEGRATED ARROWS -->
+    <!-- BOTTOM NAV -->
     <nav class="bottom-nav">
-      <button class="nav-arrow-btn" onclick="changeDay(-1)" aria-label="Previous Day">‹</button>
-      <div class="nav-item active" onclick="switchTab('daily')" id="nav-daily">
-        <span>👶</span> Daily
-      </div>
-      <div class="nav-item" onclick="switchTab('month')" id="nav-month">
-        <span>📅</span> Month
-      </div>
-      <button class="nav-arrow-btn" onclick="changeDay(1)" aria-label="Next Day">›</button>
+      <div class="nav-item active" onclick="switchTab('daily')" id="nav-daily">Daily</div>
+      <div class="nav-item" onclick="switchTab('month')" id="nav-month">Month</div>
     </nav>
 
     <!-- INSTALL PROMPT -->
@@ -757,12 +715,12 @@
     const VALID_TYPES = ['picu-day', 'picu-24', 'opd', 'er-day', 'off', 'post-off'];
     const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const TYPE_COLORS = {
-      'picu-day': { bg: '#f3e8ff', tx: '#7e22ce' },
-      'picu-24': { bg: '#ffe4e6', tx: '#e11d48' },
-      'opd': { bg: '#e0f2fe', tx: '#0284c7' },
-      'er-day': { bg: '#ffedd5', tx: '#c2410c' },
-      'off': { bg: '#dcfce7', tx: '#15803d' },
-      'post-off': { bg: '#f1f5f9', tx: '#475569' }
+      'picu-day': { bg: '#f6efff', tx: '#9a5cf0' },
+      'picu-24': { bg: '#ffe9ec', tx: '#f4617f' },
+      'opd': { bg: '#e6f4ff', tx: '#32a4e1' },
+      'er-day': { bg: '#fff3e2', tx: '#f0823f' },
+      'off': { bg: '#e3fbef', tx: '#2fb872' },
+      'post-off': { bg: '#f4f7fb', tx: '#7c8ea5' }
     };
 
     const ROSTER_TEMPLATE = `You are converting a hospital duty roster image into JSON. Output ONLY valid JSON, no markdown, no extra text.
@@ -1335,9 +1293,11 @@ EXAMPLE — follow this exact shape (replace the values):
               <span class="card-label">Selected Roster Day</span>
               <span class="date-num">${rosterMeta.month.split(' ')[0]} ${data.date.split('-')[1]}</span>
               <span class="day-name">${data.day}</span>
+            </div>
+            <div class="card-header-right">
+              <div class="badge type-${data.type}">${data.title}</div>
               ${noteBadgeHtml}
             </div>
-            <div class="badge type-${data.type}">${data.title}</div>
           </div>
           
           <div class="card-body-content">
@@ -1349,65 +1309,6 @@ EXAMPLE — follow this exact shape (replace the values):
           ${noteHtml}
         </div>
       `;
-    }
-
-    function generateCard(data) {
-      if (!data) return '';
-      const expiredHtml = isRosterExpired()
-        ? `<div class="expired-card" onclick="openRosterModal()">
-            <div class="expired-title">✨ Next month's roster not loaded yet</div>
-            <div class="expired-sub">${rosterMeta.month} ends soon. Generate the next roster.</div>
-            <div class="expired-cta">Generate Roster</div>
-          </div>`
-        : '';
-
-      let upcomingItems = [];
-      for (let i = 1; i <= 3; i++) {
-        const upIdx = currentIndex + i;
-        if (upIdx < roster.length) {
-          const upData = roster[upIdx];
-          upcomingItems.push(`
-            <div class="upcoming-card type-${upData.type}" data-index="${upIdx}" onclick="jumpToDate(${upIdx})">
-              <div class="upcoming-date-info">
-                <span class="upcoming-day">${rosterMeta.month.split(' ')[0]} ${upData.date.split('-')[1]}</span>
-                <span class="upcoming-weekday">• ${upData.day}</span>
-              </div>
-              <div class="upcoming-badge type-${upData.type}">${upData.title}</div>
-            </div>
-          `);
-        }
-      }
-
-      const upcomingHtml = upcomingItems.length > 0 ? `
-        <div class="upcoming-container">
-          <div class="upcoming-header">Upcoming Days</div>
-          ${upcomingItems.join('')}
-        </div>
-      ` : '';
-
-      return `${expiredHtml}${mainCardHtml(data)}${upcomingHtml}`;
-    }
-
-    /* ---- NAVIGATION MODE (swipe / stack) ---- */
-    const NAV_MODE_KEY = 'mrinalNavMode';
-    let NAV_MODE = 'swipe';
-
-    function initNavMode() {
-      try { const m = localStorage.getItem(NAV_MODE_KEY); NAV_MODE = (m === 'stack' || m === 'swipe') ? m : 'swipe'; } catch (e) { NAV_MODE = 'swipe'; }
-      document.querySelectorAll('#layout-switch .layout-seg').forEach(b => b.classList.toggle('active', b.dataset.mode === NAV_MODE));
-      const area = document.getElementById('daily-render-area');
-      if (area) area.classList.toggle('stack', NAV_MODE === 'stack');
-    }
-
-    function setNavMode(mode) {
-      if (mode !== 'stack' && mode !== 'swipe') return;
-      triggerHaptic(20);
-      NAV_MODE = mode;
-      try { localStorage.setItem(NAV_MODE_KEY, mode); } catch (e) {}
-      document.querySelectorAll('#layout-switch .layout-seg').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
-      const area = document.getElementById('daily-render-area');
-      if (area) area.classList.toggle('stack', mode === 'stack');
-      renderDailyView();
     }
 
     function renderScrollView() {
@@ -1455,59 +1356,19 @@ EXAMPLE — follow this exact shape (replace the values):
       idx = parseInt(idx);
       if (isNaN(idx) || idx < 0 || idx >= roster.length || idx === currentIndex) return;
       triggerHaptic(25);
-      const card = document.querySelector(`#daily-render-area .upcoming-card[data-index="${idx}"]`);
-      const done = () => { currentIndex = idx; renderScrollView(); };
-      if (card) { card.classList.add('scroll-tap'); setTimeout(done, 140); } else done();
+      const mini = document.querySelector(`#daily-render-area .upcoming-card[data-index="${idx}"]`);
+      const main = document.getElementById('dailyCardElement');
+      if (mini) mini.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      if (main) main.classList.add('tv-collapsing');
+      if (mini) mini.classList.add('tv-expanding');
+      setTimeout(() => {
+        currentIndex = idx;
+        renderScrollView();
+      }, 240);
     }
 
-    function renderDailyView(direction, enterOnly) {
-      const area = document.getElementById('daily-render-area');
-      if (NAV_MODE === 'stack') { renderScrollView(); return; }
-
-      const toNext = direction === 'right';
-
-      const enterArea = (startX) => {
-        area.innerHTML = generateCard(roster[currentIndex]);
-        area.style.transition = 'none';
-        area.style.transform = `translateX(${startX}%) scale(0.985)`;
-        area.style.opacity = '0';
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            area.style.transition = 'transform 0.40s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.30s ease';
-            area.style.transform = 'translateX(0) scale(1)';
-            area.style.opacity = '1';
-            setTimeout(() => {
-              area.style.transition = '';
-              area.style.transform = '';
-              area.style.opacity = '';
-            }, 460);
-          });
-        });
-        markPillOverflow();
-        updateTodayPill();
-      };
-
-      if (!direction) {
-        area.innerHTML = generateCard(roster[currentIndex]);
-        markPillOverflow();
-        updateTodayPill();
-        return;
-      }
-
-      if (enterOnly) { enterArea(toNext ? 100 : -100); return; }
-
-      const exitX = toNext ? -40 : 40;
-      area.style.transition = 'none';
-      area.style.transform = 'translateX(0) scale(1)';
-      area.style.opacity = '1';
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          area.style.transition = 'transform 0.20s cubic-bezier(0.55, 0, 1, 0.45), opacity 0.20s ease';
-          area.style.transform = `translateX(${exitX}%)`;
-          area.style.opacity = '0';
-        });
-      });
-      setTimeout(() => enterArea(toNext ? 100 : -100), 210);
+    function renderDailyView() {
+      renderScrollView();
     }
 
     function renderMonthView() {
@@ -1543,14 +1404,14 @@ EXAMPLE — follow this exact shape (replace the values):
         let isLongPress = false;
         let startX = 0;
         let startY = 0;
+        let moved = false;
 
         const startPress = (e) => {
-          isLongPress = false;
+          isLongPress = false; moved = false;
           if (e.type === 'contextmenu') e.preventDefault();
           cell.classList.add('pressed');
           const touch = e.touches ? e.touches[0] : e;
-          startX = touch.clientX;
-          startY = touch.clientY;
+          startX = touch.clientX; startY = touch.clientY;
 
           pressTimer = setTimeout(() => {
             isLongPress = true;
@@ -1563,19 +1424,16 @@ EXAMPLE — follow this exact shape (replace the values):
           if (!pressTimer) return;
           const touch = e.touches ? e.touches[0] : e;
           if (Math.abs(touch.clientX - startX) > 10 || Math.abs(touch.clientY - startY) > 10) {
-            clearTimeout(pressTimer);
-            pressTimer = null;
+            moved = true;
+            clearTimeout(pressTimer); pressTimer = null;
             cell.classList.remove('pressed');
           }
         };
 
         const endPress = () => {
           cell.classList.remove('pressed');
-          if (pressTimer) {
-            clearTimeout(pressTimer);
-            pressTimer = null;
-          }
-          if (!isLongPress) {
+          if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
+          if (!isLongPress && !moved) {
             triggerHaptic(20);
             jumpToDate(cell.dataset.index);
           }
@@ -1657,14 +1515,14 @@ EXAMPLE — follow this exact shape (replace the values):
       }
     }
     
-    function switchTab(tabId) {
+    function switchTab(tabId, dir) {
       triggerHaptic(30);
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-      
+
       document.getElementById(`view-${tabId}`).classList.add('active');
       document.getElementById(`nav-${tabId}`).classList.add('active');
-      
+
       if(tabId === 'daily') {
         renderDailyView();
         updateTodayPill();
@@ -1678,6 +1536,16 @@ EXAMPLE — follow this exact shape (replace the values):
           }, 120);
         }
       }
+      if (dir === 'left' || dir === 'right') animateTabEnter(tabId, dir);
+    }
+
+    function animateTabEnter(tabId, dir) {
+      const el = document.getElementById(`view-${tabId}`);
+      if (!el) return;
+      el.classList.remove('tab-enter-left', 'tab-enter-right');
+      void el.offsetWidth;
+      el.classList.add(dir === 'left' ? 'tab-enter-right' : 'tab-enter-left');
+      setTimeout(() => el.classList.remove('tab-enter-left', 'tab-enter-right'), 340);
     }
 
     /* ---- GENERATE ROSTER ---- */
@@ -1786,111 +1654,99 @@ EXAMPLE — follow this exact shape (replace the values):
       triggerHaptic(40);
       const el = document.getElementById('print-area');
       const total = roster.length;
-      const firstEnd = Math.min(16, total);
+      const firstEnd = Math.min(15, total);
       const chunks = [[0, firstEnd - 1], [firstEnd, total - 1]].filter(([a, b]) => a <= b);
       const monthName = rosterMeta.month;
+      const todayIdx = realTodayIndex;
+
+      const typeLabel = (t) => t === 'picu-day' ? 'PICU Day' : t === 'picu-24' ? 'PICU 24h' : t === 'opd' ? 'OPD' : t === 'er-day' ? 'Day ER' : t === 'off' ? 'Off' : 'Post-24h';
+      const legend = VALID_TYPES.map(t => {
+        const c = TYPE_COLORS[t] || TYPE_COLORS.opd;
+        return `<span class="pl-chip" style="background:${c.bg}; color:${c.tx}; border-color:${c.tx};">${typeLabel(t)}</span>`;
+      }).join('');
+
       el.innerHTML = chunks.map(([from, to], ci) => {
         const rows = [];
         for (let i = from; i <= to; i++) {
           const d = roster[i];
-          const weekend = d.day === 'Sat';
           const c = TYPE_COLORS[d.type] || TYPE_COLORS.opd;
           rows.push(`
-            <tr class="${weekend ? 'weekend' : ''}">
+            <tr class="${d.day === 'Sat' ? 'weekend' : ''}${i === todayIdx ? ' today' : ''}">
               <td class="pc-day">${d.date.split('-')[1]}</td>
-              <td class="pc-week">${d.day}</td>
+              <td class="pc-weekday">${d.day}</td>
               <td class="pc-type" style="background:${c.bg}; color:${c.tx};">${d.title}</td>
-              <td>${d.ward || '—'}</td>
-              <td>${d.nicu || '—'}</td>
-              <td>${d.picu || '—'}</td>
-              <td>${d.er || '—'}</td>
-              <td>${d.second || '—'}</td>
-              <td>${d.opd || '—'}</td>
+              <td class="pc-name">${d.ward || '—'}</td>
+              <td class="pc-name">${d.nicu || '—'}</td>
+              <td class="pc-name">${d.picu || '—'}</td>
+              <td class="pc-name">${d.er || '—'}</td>
+              <td class="pc-name">${d.second || '—'}</td>
+              <td class="pc-name">${d.opd || '—'}</td>
             </tr>`);
         }
         return `
           <div class="print-page">
             <div class="print-header">
-              <div class="print-title">${monthName} — Duty Roster</div>
-              <div class="print-pageno">Page ${ci + 1} of ${chunks.length} · Days ${from + 1}–${to + 1}</div>
+              <div>
+                <div class="print-title">${monthName} — Duty Roster</div>
+                <div class="print-sub">Dr. Mrinal · Pediatric Department</div>
+              </div>
+              <div class="print-pageno">Page ${ci + 1} of ${chunks.length}<br>Days ${from + 1}–${to + 1}</div>
             </div>
+            <div class="print-legend">${legend}</div>
             <table class="print-table">
+              <colgroup><col style="width:5%"><col style="width:7%"><col style="width:17%"><col style="width:10.5%"><col style="width:10.5%"><col style="width:10.5%"><col style="width:10.5%"><col style="width:12%"><col style="width:17%"></colgroup>
               <thead>
-                <tr><th>Day</th><th>Week</th><th>Type</th><th>Ward</th><th>NICU</th><th>PICU</th><th>ER</th><th>2nd Call</th><th>OPD</th></tr>
+                <tr><th>Day</th><th>Week</th><th>Type</th><th>Ward/ER</th><th>NICU</th><th>PICU</th><th>Day ER</th><th>2nd Call</th><th>OPD</th></tr>
               </thead>
               <tbody>${rows.join('')}</tbody>
             </table>
-            <div class="print-footer">Dr. Mrinal Duty App · Weekends shaded</div>
+            <div class="print-footer">Dr. Mrinal Duty App · Today's row highlighted · Weekend rows shaded · Legend colors = your duty palette</div>
           </div>`;
       }).join('');
       setTimeout(() => window.print(), 60);
     }
 
-    function initSwipeGestures() {
-      const view = document.getElementById('view-daily');
-      const area = document.getElementById('daily-render-area');
+    function initViewSwipe() {
+      const container = document.querySelector('.view-container');
+      if (!container) return;
       let startX = 0, startY = 0, axisLocked = null, tracking = false;
-      const swipeThreshold = 70;
 
-      view.addEventListener('touchstart', (e) => {
-        if (NAV_MODE !== 'swipe') return;
+      container.addEventListener('touchstart', (e) => {
         const t = e.touches[0];
         startX = t.clientX; startY = t.clientY;
         tracking = true; axisLocked = null;
-        area.style.transition = 'none';
       }, { passive: true });
 
-      view.addEventListener('touchmove', (e) => {
-        if (NAV_MODE !== 'swipe') return;
+      container.addEventListener('touchmove', (e) => {
         if (!tracking) return;
         const t = e.touches[0];
         const dx = t.clientX - startX;
         const dy = t.clientY - startY;
         if (!axisLocked) {
-          if (Math.abs(dx) > 10 || Math.abs(dy) > 10)
+          if (Math.abs(dx) > 8 || Math.abs(dy) > 8)
             axisLocked = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
-        }
-        if (axisLocked === 'x') {
-          area.style.transform = `translateX(${dx * 0.45}px) scale(${1 - Math.min(Math.abs(dx)/1200, 0.04)})`;
-          area.style.opacity = `${1 - Math.min(Math.abs(dx)/500, 0.35)}`;
         }
       }, { passive: true });
 
-      const endSwipe = (e) => {
-        if (NAV_MODE !== 'swipe') return;
+      container.addEventListener('touchend', (e) => {
         if (!tracking) return;
         tracking = false;
+        if (axisLocked !== 'x') return;
         const t = e.changedTouches[0];
         const dx = t.clientX - startX;
         const dy = t.clientY - startY;
-
-        if (axisLocked === 'x' && Math.abs(dx) >= swipeThreshold && Math.abs(dx) > Math.abs(dy)) {
-          const step = dx < 0 ? 1 : -1;
-          const nextIndex = currentIndex + step;
-          if (nextIndex >= 0 && nextIndex < roster.length) {
-            const travel = dx < 0 ? -110 : 110;
-            area.style.transition = 'transform 0.22s cubic-bezier(0.55, 0, 1, 0.45), opacity 0.2s ease';
-            area.style.transform = `translateX(${travel}%)`;
-            area.style.opacity = '0';
-            setTimeout(() => {
-              currentIndex = nextIndex;
-              triggerHaptic(30);
-              renderDailyView(dx < 0 ? 'right' : 'left', true);
-            }, 230);
-          } else {
-            area.style.transition = 'transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease';
-            area.style.transform = 'translateX(0) scale(1)';
-            area.style.opacity = '1';
-          }
-        } else {
-          area.style.transition = 'transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease';
-          area.style.transform = 'translateX(0) scale(1)';
-          area.style.opacity = '1';
+        if (Math.abs(dx) >= 60 && Math.abs(dx) > Math.abs(dy) * 1.2) {
+          handleViewSwipe(dx);
         }
-      };
-      
-      view.addEventListener('touchend', endSwipe, { passive: true });
-      view.addEventListener('touchcancel', endSwipe, { passive: true });
+      }, { passive: true });
+
+      container.addEventListener('touchcancel', () => { tracking = false; }, { passive: true });
+    }
+
+    function handleViewSwipe(dx) {
+      const monthly = document.getElementById('view-month').classList.contains('active');
+      if (dx < 0 && !monthly) switchTab('month', 'left');
+      else if (dx > 0 && monthly) switchTab('daily', 'right');
     }
 
     function initCardLongPress() {
@@ -1965,11 +1821,10 @@ EXAMPLE — follow this exact shape (replace the values):
 
     initTheme();
     initData();
-    initNavMode();
     currentIndex = realTodayIndex;
     renderDailyView();
     renderMonthView();
-    initSwipeGestures();
+    initViewSwipe();
     initCardLongPress();
     updateTodayPill();
     initDutyAlerts();
