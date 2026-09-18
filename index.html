@@ -312,10 +312,6 @@
     .cal-cell .cal-date { font-size: 20px; font-weight: 900; display: inline-flex; align-items: flex-start; justify-content: center; }
     
     .note-asterisk { font-weight: 900; font-size: 18px; line-height: 1; margin-left: 1px; color: inherit; }
-    .fest-mark { font-size: 11px; line-height: 1; margin-left: 1px; color: #d97706; }
-
-    .cal-cell.is-festival { box-shadow: inset 0 0 0 2px #d97706; }
-    :root[data-theme="dark"] .cal-cell.is-festival { box-shadow: inset 0 0 0 2px #f59e0b; }
 
     /* Duty Pastel Color Mappings */
     .type-picu-day { background: var(--picu-day-bg); color: var(--picu-day-txt); }
@@ -414,26 +410,31 @@
     :root[data-theme="dark"] .btn-cancel { background: #1e293b; color: #cbd5e1; }
     .btn-save { background: var(--accent); color: white; }
 
-    /* SEARCH MODAL */
-    .modal-card.search-card { max-width: 380px; max-height: 82%; display: flex; flex-direction: column; }
-    .search-input { width: 100%; border: 2px solid #e2e8f0; border-radius: 16px; padding: 13px 14px; font-size: 15px; font-family: 'Nunito', sans-serif; font-weight: 700; outline: none; margin-bottom: 12px; background: #f8fafc; color: #1e293b; transition: border 0.2s; }
-    .search-input:focus { border-color: var(--accent); }
-    :root[data-theme="dark"] .search-input { background: #0b1220; border-color: #29374f; color: #e2e8f0; }
-    .search-results { flex: 1; overflow-y: auto; min-height: 120px; scrollbar-width: none; }
-    .search-results::-webkit-scrollbar { display: none; }
-    .search-hint { font-size: 13px; color: var(--text-muted); font-weight: 700; text-align: center; padding: 18px 4px; }
-    .search-result { display: flex; justify-content: space-between; align-items: center; gap: 8px; background: #f8fafc; padding: 10px 12px; border-radius: 14px; margin-bottom: 8px; cursor: pointer; border-left: 4px solid transparent; transition: transform 0.15s ease; }
-    .search-result:active { transform: scale(0.98); }
-    :root[data-theme="dark"] .search-result { background: rgba(30, 41, 59, 0.6); }
-    .search-result.type-picu-day { border-left-color: var(--picu-day-txt); }
-    .search-result.type-picu-24 { border-left-color: var(--picu-24-txt); }
-    .search-result.type-opd { border-left-color: var(--opd-txt); }
-    .search-result.type-er-day { border-left-color: var(--er-day-txt); }
-    .search-result.type-off { border-left-color: var(--off-txt); }
-    .search-result.type-post-off { border-left-color: var(--post-off-txt); }
-    .search-result-date { font-size: 14px; font-weight: 900; color: var(--text-main); }
-    .search-result-week { font-size: 12px; color: var(--text-muted); font-weight: 800; }
-    .search-result-roles { font-size: 11px; font-weight: 800; color: var(--accent); margin-top: 2px; }
+    /* ALERT SETTINGS MODAL */
+    .modal-card.alert-card { max-width: 380px; }
+    .setting-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+    .setting-label { font-size: 15px; font-weight: 900; color: var(--text-main); }
+    .setting-sub { font-size: 12px; font-weight: 700; color: var(--text-muted); margin-top: 1px; }
+    .setting-block { margin-bottom: 16px; }
+    .alert-select { min-width: 100px; padding: 9px 12px; border-radius: 12px; font-size: 14px; font-weight: 800; font-family: 'Nunito', sans-serif; border: 2px solid #e2e8f0; background: #f8fafc; color: var(--text-main); }
+    :root[data-theme="dark"] .alert-select { background: #0b1220; border-color: #29374f; }
+    .alert-types-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .alert-type-label { font-size: 13px; font-weight: 800; border-radius: 12px; padding: 8px 14px; cursor: pointer; user-select: none; transition: transform 0.12s, opacity 0.12s; border: 2px solid transparent; opacity: 0.55; }
+    .alert-type-label:active { transform: scale(0.95); }
+    .alert-type-label input { display: none; }
+    .alert-type-label.checked { opacity: 1; border-color: var(--accent); }
+    .alert-actions .btn-cancel { font-size: 13px; }
+    /* Toggle switch */
+    .switch { position: relative; width: 52px; height: 30px; flex-shrink: 0; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; inset: 0; background: #cbd5e1; border-radius: 99px; cursor: pointer; transition: background 0.25s; }
+    .slider::before { content: ''; position: absolute; left: 3px; top: 3px; width: 24px; height: 24px; background: white; border-radius: 50%; transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1); box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
+    .switch input:checked + .slider { background: var(--accent); }
+    .switch input:checked + .slider::before { transform: translateX(22px); }
+    .alert-type-label[data-t="picu-day"]  { background: var(--picu-day-bg); color: var(--picu-day-txt); }
+    .alert-type-label[data-t="picu-24"]  { background: var(--picu-24-bg); color: var(--picu-24-txt); }
+    .alert-type-label[data-t="opd"]      { background: var(--opd-bg);      color: var(--opd-txt); }
+    .alert-type-label[data-t="er-day"]   { background: var(--er-day-bg);   color: var(--er-day-txt); }
 
     /* GENERATE ROSTER MODAL */
     .modal-card.roster-card { max-width: 380px; }
@@ -509,22 +510,20 @@
       body * { visibility: hidden; }
       #print-area, #print-area * { visibility: visible; }
       #print-area { display: block !important; position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 0; }
-      .print-page { page-break-after: always; padding: 16px 14px; font-family: 'Inter', 'Nunito', sans-serif; color: #1e293b; }
-      .print-header { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 3px solid #0284c7; padding-bottom: 8px; margin-bottom: 12px; }
-      .print-title { font-size: 22px; font-weight: 900; color: #0f172a; }
-      .print-pageno { font-size: 12px; font-weight: 800; color: #64748b; }
-      .print-table { width: 100%; border-collapse: collapse; font-size: 9.5px; }
-      .print-table th { background: #f1f5f9; color: #334155; text-align: left; padding: 6px 4px; font-size: 8.5px; text-transform: uppercase; letter-spacing: 0.4px; border: 1px solid #e2e8f0; }
-      .print-table td { border: 1px solid #e2e8f0; padding: 6px 5px; font-weight: 600; }
+      .print-page { page-break-after: always; padding: 2px 2px; font-family: 'Inter', 'Nunito', sans-serif; color: #1e293b; }
+      .print-header { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 3px solid #0284c7; padding-bottom: 8px; margin-bottom: 14px; }
+      .print-title { font-size: 26px; font-weight: 900; color: #0f172a; }
+      .print-pageno { font-size: 13px; font-weight: 800; color: #64748b; }
+      .print-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+      .print-table th { background: #f1f5f9; color: #334155; text-align: left; padding: 9px 8px; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.4px; border: 1px solid #e2e8f0; }
+      .print-table td { border: 1px solid #e2e8f0; padding: 9px 9px; font-weight: 600; }
       .print-table tr.weekend td { background: #f8fafc; }
-      .print-table tr.festival td { background: #fef9c3; }
-      .print-table tr.festival .pc-type { box-shadow: inset 0 0 0 2px #f59e0b; border-radius: 6px; }
-      .pc-day { font-weight: 900; font-size: 11px; text-align: center; }
+      .pc-day { font-weight: 900; font-size: 13px; text-align: center; }
       .pc-week { font-weight: 800; text-align: center; color: #64748b; }
-      .pc-type { font-weight: 800; border-radius: 8px; text-align: center; font-size: 10px; white-space: nowrap; }
-      .print-footer { margin-top: 8px; font-size: 10px; color: #94a3b8; font-weight: 700; }
+      .pc-type { font-weight: 800; border-radius: 8px; text-align: center; font-size: 11.5px; white-space: nowrap; }
+      .print-footer { margin-top: 12px; font-size: 12px; color: #94a3b8; font-weight: 700; }
     }
-    @page { size: A4 portrait; margin: 0; }
+    @page { size: A4 landscape; margin: 12mm; }
 
     /* RESPONSIVE DESKTOP */
     @media (min-width: 768px) {
@@ -557,9 +556,8 @@
           <div class="title">🩺 Dr. Mrinal</div>
         </div>
         <div class="header-actions">
-          <button class="icon-btn" id="notif-toggle" onclick="toggleDutyNotifs()" aria-label="Turn on duty alerts">🔕</button>
+          <button class="icon-btn" id="notif-toggle" onclick="openAlertModal()" aria-label="Alert settings">🔕</button>
           <button class="icon-btn" id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">🌙</button>
-          <button class="icon-btn" onclick="openSearchModal()" aria-label="Search roster">🔍</button>
         </div>
       </div>
     </header>
@@ -631,15 +629,39 @@
       </div>
     </div>
 
-    <!-- SEARCH MODAL -->
-    <div class="modal-overlay" id="search-modal">
-      <div class="modal-card search-card">
+    <!-- ALERT SETTINGS MODAL -->
+    <div class="modal-overlay" id="alert-modal">
+      <div class="modal-card alert-card">
         <div class="modal-header">
-          <span>Search Roster</span>
-          <span class="modal-close-x" onclick="closeSearchModal()">✕</span>
+          <span>🔔 Alert Settings</span>
+          <span class="modal-close-x" onclick="closeAlertModal()">✕</span>
         </div>
-        <input class="search-input" id="search-input" placeholder="Doctor name or duty type…" autocomplete="off" oninput="runSearch()">
-        <div class="search-results" id="search-results"></div>
+
+        <div class="setting-row">
+          <div>
+            <div class="setting-label">Duty Day Alerts</div>
+            <div class="setting-sub">Notify on duty mornings</div>
+          </div>
+          <label class="switch"><input type="checkbox" id="alert-enabled"><span class="slider"></span></label>
+        </div>
+
+        <div class="setting-row">
+          <div>
+            <div class="setting-label">Alert Time</div>
+            <div class="setting-sub">Deliver the notification at</div>
+          </div>
+          <select class="alert-select" id="alert-hour"></select>
+        </div>
+
+        <div class="setting-block">
+          <div class="setting-label">Days To Alert</div>
+          <div class="alert-types-list" id="alert-types-list"></div>
+        </div>
+
+        <div class="modal-actions alert-actions">
+          <button class="modal-btn btn-cancel" id="test-alert-btn" onclick="sendTestNotification()">🔔 Test</button>
+          <button class="modal-btn btn-save" onclick="saveAlertSettings()">Save</button>
+        </div>
       </div>
     </div>
 
@@ -709,7 +731,6 @@
     const THEME_KEY = 'mrinalTheme';
     const VALID_TYPES = ['picu-day', 'picu-24', 'opd', 'er-day', 'off', 'post-off'];
     const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    const STANDARD_TITLES = ['PICU Day', '24hr PICU', 'OPD', 'Day ER', 'Saturday OFF', 'Post 24h OFF', 'Post 24h Duty OFF', 'Public Holiday / Off'];
     const TYPE_COLORS = {
       'picu-day': { bg: '#f3e8ff', tx: '#7e22ce' },
       'picu-24': { bg: '#ffe4e6', tx: '#e11d48' },
@@ -822,14 +843,35 @@ EXAMPLE — follow this exact shape (replace the values):
 
     /* ---- DUTY ALERTS ---- */
     const ALERT_KEY = 'mrinalDutyAlerts';
+    const ALERT_SETTINGS_KEY = 'mrinalDutyAlertSettings';
+    const DEFAULT_ALERT_SETTINGS = { hour: 8, types: ['picu-day', 'picu-24', 'opd', 'er-day'] };
+    const ALERT_TYPES = [
+      { type: 'picu-day', label: 'PICU Day' },
+      { type: 'picu-24', label: 'PICU 24h' },
+      { type: 'opd', label: 'OPD' },
+      { type: 'er-day', label: 'Day ER' }
+    ];
     let alertTimer = null;
+
+    function alertSettings() {
+      try {
+        const s = JSON.parse(localStorage.getItem(ALERT_SETTINGS_KEY) || 'null');
+        if (s && typeof s.hour === 'number' && Array.isArray(s.types) && s.types.length) return s;
+      } catch (e) {}
+      return Object.assign({}, DEFAULT_ALERT_SETTINGS);
+    }
 
     function dutyAlertEnabled() {
       return typeof Notification !== 'undefined' && Notification.permission === 'granted' && localStorage.getItem(ALERT_KEY) === '1';
     }
 
     function dutyAlertTypes() {
-      return ['picu-day', 'picu-24', 'opd', 'er-day'];
+      return alertSettings().types;
+    }
+
+    function dutyAlertHour() {
+      const h = alertSettings().hour;
+      return (isFinite(h) && (h | 0) === h && h >= 0 && h <= 23) ? h : 8;
     }
 
     function isDutyAlertDay(day) {
@@ -842,10 +884,10 @@ EXAMPLE — follow this exact shape (replace the values):
       const perms = typeof Notification !== 'undefined' ? Notification.permission : 'unsupported';
       if (localStorage.getItem(ALERT_KEY) === '1' && perms === 'granted') {
         btn.innerText = '🔔';
-        btn.setAttribute('aria-label', 'Turn off duty alerts');
+        btn.setAttribute('aria-label', 'Alert settings');
       } else {
         btn.innerText = '🔕';
-        btn.setAttribute('aria-label', 'Turn on duty alerts');
+        btn.setAttribute('aria-label', 'Alert settings');
       }
     }
 
@@ -858,30 +900,86 @@ EXAMPLE — follow this exact shape (replace the values):
       t._tm = setTimeout(() => t.classList.remove('show'), 2800);
     }
 
-    function toggleDutyNotifs() {
+    function openAlertModal() {
       triggerHaptic(20);
-      if (typeof Notification === 'undefined') { showToast('Notifications not supported here'); return; }
+      const s = alertSettings();
+      const list = document.getElementById('alert-types-list');
+      if (!list.children.length) {
+        list.innerHTML = ALERT_TYPES.map(t =>
+          `<label class="alert-type-label" data-t="${t.type}"><input class="alert-type" type="checkbox" value="${t.type}">${t.label}</label>`
+        ).join('');
+        list.querySelectorAll('.alert-type-label').forEach(l =>
+          l.addEventListener('click', () => l.classList.toggle('checked', l.querySelector('input').checked)));
+      }
+      const hourSel = document.getElementById('alert-hour');
+      if (!hourSel.children.length) {
+        for (let h = 6; h <= 12; h++) {
+          const opt = document.createElement('option');
+          opt.value = String(h);
+          opt.textContent = `${(h % 12) || 12}${h >= 12 ? ' PM' : ' AM'}`;
+          hourSel.appendChild(opt);
+        }
+      }
+      document.getElementById('alert-enabled').checked = localStorage.getItem(ALERT_KEY) === '1';
+      hourSel.value = String(dutyAlertHour());
+      const types = s.types;
+      list.querySelectorAll('.alert-type').forEach(ch => {
+        ch.checked = types.includes(ch.value);
+        const label = ch.closest('.alert-type-label');
+        if (label) label.classList.toggle('checked', ch.checked);
+      });
+      const canNotif = typeof Notification !== 'undefined';
+      document.getElementById('alert-enabled').disabled = !canNotif;
+      document.getElementById('test-alert-btn').disabled = !canNotif;
+      document.getElementById('alert-modal').classList.add('show');
+    }
 
-      if (localStorage.getItem(ALERT_KEY) === '1') {
+    function closeAlertModal() {
+      document.getElementById('alert-modal').classList.remove('show');
+    }
+
+    function saveAlertSettings() {
+      const enabled = document.getElementById('alert-enabled').checked;
+      const hour = parseInt(document.getElementById('alert-hour').value, 10) || 8;
+      const types = Array.from(document.querySelectorAll('.alert-type:checked')).map(c => c.value);
+      if (!types.length) { showToast('Pick at least one duty type'); return; }
+      localStorage.setItem(ALERT_SETTINGS_KEY, JSON.stringify({ hour, types }));
+
+      if (!enabled) {
         localStorage.setItem(ALERT_KEY, '0');
         clearTimeout(alertTimer); alertTimer = null;
         refreshAlertButton();
+        closeAlertModal();
         showToast('Duty alerts off');
         return;
       }
 
-      if (Notification.permission === 'denied') { showToast('Notifications blocked in browser settings'); return; }
-
-      const enable = () => {
+      if (typeof Notification === 'undefined') { showToast('Notifications not supported here'); closeAlertModal(); return; }
+      if (Notification.permission === 'denied') {
+        showToast('Notifications blocked in browser settings');
+        refreshAlertButton();
+        closeAlertModal();
+        return;
+      }
+      const commit = () => {
         localStorage.setItem(ALERT_KEY, '1');
         refreshAlertButton();
         scheduleDutyAlerts();
-        showDutyAlert(realTodayIndex, true);
-        showToast('Duty alerts on — every duty day 8 AM');
+        const h = dutyAlertHour();
+        showToast(`Alerts on — duty mornings at ${(h % 12) || 12}${h >= 12 ? ' PM' : ' AM'}`);
+        closeAlertModal();
+        fireNotification(realTodayIndex, true);
       };
+      if (Notification.permission === 'granted') commit();
+      else Notification.requestPermission().then(p => { if (p === 'granted') commit(); else { refreshAlertButton(); closeAlertModal(); } });
+    }
 
-      if (Notification.permission === 'granted') enable();
-      else Notification.requestPermission().then(p => { if (p === 'granted') enable(); else showToast('Permission not granted'); });
+    function sendTestNotification() {
+      if (typeof Notification === 'undefined') { showToast('Notifications not supported here'); return; }
+      const go = () => { fireNotification(realTodayIndex, true); showToast('🔔 Test notification sent'); };
+      if (Notification.permission === 'granted') { go(); return; }
+      if (Notification.permission === 'denied') { showToast('Notifications blocked in browser settings'); return; }
+      Notification.requestPermission().then(p => { if (p === 'granted') go(); else showToast('Permission not granted'); });
     }
 
     function indexToDate(index) {
@@ -893,7 +991,7 @@ EXAMPLE — follow this exact shape (replace the values):
       for (let i = fromIndex; i < roster.length; i++) {
         if (!isDutyAlertDay(roster[i])) continue;
         const when = indexToDate(i);
-        when.setHours(8, 0, 0, 0);
+        when.setHours(dutyAlertHour(), 0, 0, 0);
         if (when.getTime() > fromTime.getTime()) return { index: i, when };
       }
       return null;
@@ -907,7 +1005,7 @@ EXAMPLE — follow this exact shape (replace the values):
       if (!target) return;
       const wait = target.when.getTime() - from.getTime();
       alertTimer = setTimeout(() => {
-        showDutyAlert(target.index, false);
+        showDutyAlert(target.index);
         scheduleDutyAlerts();
       }, Math.max(wait, 1000));
     }
@@ -925,7 +1023,7 @@ EXAMPLE — follow this exact shape (replace the values):
       const parts = [];
       if (d.type === 'picu-24') {
         parts.push(`PICU 24h: ${d.picu}`);
-        parts.push(`Ward/ER: ${d.ward === '—' ? d.ward : d.ward}`);
+        parts.push(`Ward/ER: ${d.ward}`);
         const handover = findHandoverName(index);
         if (handover) parts.push(`Take over from ${handover}`);
       } else if (d.type === 'picu-day') {
@@ -943,8 +1041,8 @@ EXAMPLE — follow this exact shape (replace the values):
       return `${title}\n${parts.slice(0, 6).join(' · ')}`;
     }
 
-    function showDutyAlert(index, isTest) {
-      if (!dutyAlertEnabled()) return;
+    function fireNotification(index, isTest) {
+      if (typeof Notification === 'undefined') return;
       if (index < 0 || index >= roster.length) return;
       const d = roster[index];
       const month = rosterMeta.month.split(' ')[0];
@@ -960,6 +1058,11 @@ EXAMPLE — follow this exact shape (replace the values):
         window.focus();
         jumpToDate(index);
       });
+    }
+
+    function showDutyAlert(index) {
+      if (!dutyAlertEnabled()) return;
+      fireNotification(index, false);
     }
 
     function initDutyAlerts() {
@@ -1021,10 +1124,6 @@ EXAMPLE — follow this exact shape (replace the values):
 
     function isRosterExpired() {
       return new Date() > getRosterEnd();
-    }
-
-    function isFestivalDay(day) {
-      return day && day.title && !STANDARD_TITLES.includes(day.title);
     }
 
     function recomputeToday() {
@@ -1233,16 +1332,14 @@ EXAMPLE — follow this exact shape (replace the values):
         const hasNote = !!notesDB[day.date];
         const hasNoteClass = hasNote ? 'has-note' : '';
         const isTodayClass = index === realTodayIndex ? 'is-today' : '';
-        const isFestClass = isFestivalDay(day) ? 'is-festival' : '';
         
         const asteriskHtml = hasNote ? `<span class="note-asterisk">*</span>` : '';
-        const festHtml = isFestivalDay(day) ? `<span class="fest-mark">✦</span>` : '';
         
         html += `
-          <div class="cal-cell type-${day.type} ${hasNoteClass} ${isTodayClass} ${isFestClass}" 
+          <div class="cal-cell type-${day.type} ${hasNoteClass} ${isTodayClass}" 
                data-index="${index}" data-date="${day.date}"
                style="animation-delay: ${(index + 4) * 18}ms;">
-            <span class="cal-date">${day.date.split('-')[1]}${asteriskHtml}${festHtml}</span>
+            <span class="cal-date">${day.date.split('-')[1]}${asteriskHtml}</span>
           </div>
         `;
       });
@@ -1393,65 +1490,6 @@ EXAMPLE — follow this exact shape (replace the values):
       }
     }
 
-    /* ---- SEARCH ---- */
-    function openSearchModal() {
-      triggerHaptic(20);
-      document.getElementById('search-modal').classList.add('show');
-      document.getElementById('search-input').value = '';
-      runSearch();
-      setTimeout(() => document.getElementById('search-input').focus(), 300);
-    }
-
-    function closeSearchModal() {
-      document.getElementById('search-modal').classList.remove('show');
-    }
-
-    function runSearch() {
-      const q = document.getElementById('search-input').value.trim().toLowerCase();
-      const box = document.getElementById('search-results');
-      if (!q) {
-        box.innerHTML = '<div class="search-hint">Search matches Ward, NICU, PICU, ER, 2nd on call and OPD names, or duty types.</div>';
-        return;
-      }
-      const tests = [
-        ['Ward', d => d.ward],
-        ['NICU', d => d.nicu],
-        ['PICU', d => d.picu],
-        ['Day ER', d => d.er],
-        ['2nd Call', d => d.second],
-        ['OPD', d => d.opd]
-      ];
-      const found = [];
-      roster.forEach((day, idx) => {
-        const roles = [];
-        tests.forEach(([label, fn]) => {
-          const v = fn(day);
-          if (v && v.split(',').some(n => n.trim().toLowerCase().includes(q))) roles.push(label);
-        });
-        if (day.title.toLowerCase().includes(q)) roles.unshift('Duty Type');
-        if (roles.length) found.push({ idx, day, roles });
-      });
-      if (!found.length) {
-        box.innerHTML = `<div class="search-hint">No matches for “${q}”.</div>`;
-        return;
-      }
-      const monthName = rosterMeta.month.split(' ')[0];
-      box.innerHTML = found.map(f => `
-        <div class="search-result type-${f.day.type}" onclick="jumpToSearch(${f.idx})">
-          <div>
-            <div class="search-result-date">${monthName} ${f.day.date.split('-')[1]} <span class="search-result-week">• ${f.day.day}</span></div>
-            <div class="search-result-roles">${f.roles.join(' · ')}</div>
-          </div>
-          <div class="upcoming-badge type-${f.day.type}">${f.day.title}</div>
-        </div>`).join('');
-    }
-
-    function jumpToSearch(idx) {
-      triggerHaptic(20);
-      closeSearchModal();
-      jumpToDate(idx);
-    }
-
     /* ---- GENERATE ROSTER ---- */
     function openRosterModal() {
       triggerHaptic(20);
@@ -1558,7 +1596,7 @@ EXAMPLE — follow this exact shape (replace the values):
       triggerHaptic(40);
       const el = document.getElementById('print-area');
       const total = roster.length;
-      const firstEnd = Math.min(15, total);
+      const firstEnd = Math.min(16, total);
       const chunks = [[0, firstEnd - 1], [firstEnd, total - 1]].filter(([a, b]) => a <= b);
       const monthName = rosterMeta.month;
       el.innerHTML = chunks.map(([from, to], ci) => {
@@ -1566,10 +1604,9 @@ EXAMPLE — follow this exact shape (replace the values):
         for (let i = from; i <= to; i++) {
           const d = roster[i];
           const weekend = d.day === 'Sat';
-          const fest = isFestivalDay(d);
           const c = TYPE_COLORS[d.type] || TYPE_COLORS.opd;
           rows.push(`
-            <tr class="${weekend ? 'weekend' : ''} ${fest ? 'festival' : ''}">
+            <tr class="${weekend ? 'weekend' : ''}">
               <td class="pc-day">${d.date.split('-')[1]}</td>
               <td class="pc-week">${d.day}</td>
               <td class="pc-type" style="background:${c.bg}; color:${c.tx};">${d.title}</td>
@@ -1593,7 +1630,7 @@ EXAMPLE — follow this exact shape (replace the values):
               </thead>
               <tbody>${rows.join('')}</tbody>
             </table>
-            <div class="print-footer">Dr. Mrinal Duty App · Weekends shaded · Festivals highlighted gold</div>
+            <div class="print-footer">Dr. Mrinal Duty App · Weekends shaded</div>
           </div>`;
       }).join('');
       setTimeout(() => window.print(), 60);
@@ -1719,8 +1756,10 @@ EXAMPLE — follow this exact shape (replace the values):
 
     function closeAllModals() {
       closeNoteModal();
-      closeSearchModal();
+      closeAlertModal();
       closeRosterModal();
+      const im = document.getElementById('install-modal');
+      if (im && im.classList.contains('show')) im.classList.remove('show');
     }
 
     document.addEventListener('keydown', (e) => {
