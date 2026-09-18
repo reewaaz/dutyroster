@@ -288,7 +288,7 @@
     #view-month.active { display: flex; flex-direction: column; }
     #view-month::-webkit-scrollbar { display: none; }
 
-    .generate-btn { display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--accent); color: #fff; border: none; border-radius: 16px; padding: 13px 16px; font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 14px; cursor: pointer; margin-bottom: 12px; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.25); transition: transform 0.18s ease; }
+    .generate-btn { display: flex; align-items: center; justify-content: center; gap: 5px; background: var(--accent); color: #fff; border: none; border-radius: 10px; padding: 6px 11px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 12px; cursor: pointer; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(2, 132, 199, 0.22); transition: transform 0.18s ease; }
     .generate-btn:active { transform: scale(0.98); }
     
     .calendar-wrapper { background: white; border-radius: 28px; padding: 16px 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.03); border: 1px solid #f1f5f9; display: flex; flex-direction: column; }
@@ -1215,7 +1215,7 @@ EXAMPLE — follow this exact shape (replace the values):
     function getDutyHours(data) {
       if (!data) return '';
       if (data.type === 'off') return '';
-      if (data.type === 'post-off') return 'Ends after morning handover, conference & rounds';
+      if (data.type === 'post-off') return 'Off Day';
       if (data.type === 'picu-24') return '9 AM – 9 AM (24h duty)';
       const wd = data.day;
       if (wd === 'Fri') return '9 AM – 3 PM';
@@ -1291,7 +1291,7 @@ EXAMPLE — follow this exact shape (replace the values):
           <div class="card-header">
             <div>
               <span class="card-label">Selected Roster Day</span>
-              <span class="date-num">${rosterMeta.month.split(' ')[0]} ${data.date.split('-')[1]}</span>
+              <span class="date-num">${rosterMeta.month.split(' ')[0]} ${data.date.split('-')[1]}${savedNote ? '<span class="scroll-note">*</span>' : ''}</span>
               <span class="day-name">${data.day}</span>
             </div>
             <div class="card-header-right">
@@ -1330,10 +1330,10 @@ EXAMPLE — follow this exact shape (replace the values):
         html += `
           <div class="upcoming-card type-${d.type}${past}" data-index="${i}" onclick="openScrollDay(${i})">
             <div class="upcoming-date-info">
-              <span class="upcoming-day">${mon} ${d.date.split('-')[1]}</span>
+              <span class="upcoming-day">${mon} ${d.date.split('-')[1]}${noteMark}</span>
               <span class="upcoming-weekday">• ${d.day}</span>
             </div>
-            <div class="upcoming-badge type-${d.type}">${d.title}${noteMark}</div>
+            <div class="upcoming-badge type-${d.type}">${d.title}</div>
           </div>`;
       });
       area.innerHTML = html;
