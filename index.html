@@ -108,20 +108,8 @@
     #view-daily { display: none; flex-direction: column; touch-action: pan-y; }
     #view-daily.active { display: flex; }
 
-    /* MY DUTY VIEW STYLES */
-    #view-myduty { overflow-y: auto; scrollbar-width: none; }
-    #view-myduty.active { display: flex; flex-direction: column; }
-    #view-myduty::-webkit-scrollbar { display: none; }
-    .myduty-summary { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin: 4px 4px 12px; }
-    .myduty-card { border-radius: 22px; padding: 16px; margin-bottom: 10px; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05); cursor: pointer; display: flex; flex-direction: column; gap: 10px; user-select: none; -webkit-tap-highlight-color: transparent; transition: transform 0.15s ease; }
-    .myduty-card:active { transform: scale(0.98); }
-    .myduty-card-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-    .myduty-day { font-size: 21px; font-weight: 900; color: var(--text-main); line-height: 1.1; }
-    .myduty-week { font-size: 12px; color: var(--text-muted); font-weight: 800; }
-    .myduty-empty { text-align: center; color: var(--text-muted); font-weight: 800; padding: 40px 10px; }
-
     /* Today Pill */
-    .today-pill { position: absolute; top: 22px; right: 16px; z-index: 30; background: var(--accent); color: #fff; border: none; padding: 12px 20px; border-radius: 999px; font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 14px; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 16px rgba(2, 132, 199, 0.4); cursor: pointer; opacity: 0; transform: translateY(-6px) scale(0.9); pointer-events: none; transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); -webkit-tap-highlight-color: transparent; }
+    .today-pill { position: absolute; bottom: calc(88px + env(safe-area-inset-bottom)); right: 16px; z-index: 30; background: var(--accent); color: #fff; border: none; padding: 12px 20px; border-radius: 999px; font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 14px; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 16px rgba(2, 132, 199, 0.4); cursor: pointer; opacity: 0; transform: translateY(-6px) scale(0.9); pointer-events: none; transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); -webkit-tap-highlight-color: transparent; }
     .today-pill.visible { opacity: 1; transform: none; pointer-events: auto; }
     .today-pill:active { transform: scale(0.94); }
 
@@ -570,11 +558,6 @@
         <div id="daily-render-area"></div>
       </div>
 
-      <!-- MY DUTY VIEW -->
-      <div id="view-myduty" class="tab-content">
-        <div id="myduty-render-area"></div>
-      </div>
-
       <!-- MONTH VIEW -->
       <div id="view-month" class="tab-content">
         <button class="generate-btn" onclick="openRosterModal()">✨ Generate Roster</button>
@@ -597,9 +580,6 @@
       <button class="nav-arrow-btn" onclick="changeDay(-1)" aria-label="Previous Day">‹</button>
       <div class="nav-item active" onclick="switchTab('daily')" id="nav-daily">
         <span>👶</span> Daily
-      </div>
-      <div class="nav-item" onclick="switchTab('myduty')" id="nav-myduty">
-        <span>🩺</span> My Duty
       </div>
       <div class="nav-item" onclick="switchTab('month')" id="nav-month">
         <span>📅</span> Month
@@ -1137,10 +1117,6 @@ EXAMPLE — follow this exact shape (replace the values):
         renderDailyView();
         updateTodayPill();
       }
-      if(tabId === 'myduty') {
-        document.getElementById('today-pill').classList.remove('visible');
-        renderMyDutyView();
-      }
       if(tabId === 'month') {
         document.getElementById('today-pill').classList.remove('visible');
         if (document.querySelector('.cal-cell.is-today')) {
@@ -1150,47 +1126,6 @@ EXAMPLE — follow this exact shape (replace the values):
           }, 120);
         }
       }
-    }
-
-    /* ---- MY DUTY ---- */
-    function findMrinalDays() {
-      const hits = [];
-      roster.forEach((day, idx) => {
-        const roles = [];
-        const has = (s) => s && s.trim().toLowerCase().includes('mrinal');
-        if (has(day.picu)) roles.push(day.title === '24hr PICU' ? '24h PICU' : 'PICU Duty');
-        if (has(day.er)) roles.push('Day ER');
-        if (day.opd && day.opd.split(',').some(n => has(n))) roles.push('OPD');
-        if (roles.length) hits.push({ idx, day, roles });
-      });
-      return hits;
-    }
-
-    function renderMyDutyView() {
-      const area = document.getElementById('myduty-render-area');
-      if (!area) return;
-      const hits = findMrinalDays();
-      if (!hits.length) {
-        area.innerHTML = `<div class="myduty-empty">No duties found for Mrinal in ${rosterMeta.month}.</div>`;
-        return;
-      }
-      const monthName = rosterMeta.month.split(' ')[0];
-      let html = `<div class="myduty-summary">${hits.length} duty day${hits.length > 1 ? 's' : ''} in ${rosterMeta.month}</div>`;
-      hits.forEach(h => {
-        const rolePills = h.roles.map(r => `<span class="pill">🎯 ${r}</span>`).join('');
-        html += `
-          <div class="myduty-card type-${h.day.type}" onclick="jumpToDate(${h.idx})">
-            <div class="myduty-card-top">
-              <div>
-                <div class="myduty-day">${monthName} ${h.day.date.split('-')[1]}</div>
-                <div class="myduty-week">${h.day.day}</div>
-              </div>
-              <div class="badge type-${h.day.type}">${h.day.title}</div>
-            </div>
-            <div class="pills">${rolePills}</div>
-          </div>`;
-      });
-      area.innerHTML = html;
     }
 
     /* ---- SEARCH ---- */
@@ -1336,7 +1271,6 @@ EXAMPLE — follow this exact shape (replace the values):
       closeRosterModal();
       renderMonthView();
       renderDailyView();
-      renderMyDutyView();
       setRosterStatus('', true);
     }
 
@@ -1350,7 +1284,6 @@ EXAMPLE — follow this exact shape (replace the values):
       closeRosterModal();
       renderMonthView();
       renderDailyView();
-      renderMyDutyView();
     }
 
     /* ---- PRINT ---- */
@@ -1508,13 +1441,12 @@ EXAMPLE — follow this exact shape (replace the values):
     currentIndex = realTodayIndex;
     renderDailyView();
     renderMonthView();
-    renderMyDutyView();
     initSwipeGestures();
     initCardLongPress();
     updateTodayPill();
 
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js').catch(() => {});
+      navigator.serviceWorker.register('./sw.js?v=2').catch(() => {});
     }
   </script>
 </body>
