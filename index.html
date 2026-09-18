@@ -115,8 +115,10 @@
     #daily-render-area .card.today, #daily-render-area .upcoming-card { scroll-snap-align: center; flex-shrink: 0; }
     #daily-render-area .card.today { animation: popIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards; }
     .upcoming-card.scroll-past { opacity: 0.72; }
-    .upcoming-card.tv-expanding { transform: scale(1.045) translateY(-4px); box-shadow: 0 14px 32px rgba(0, 0, 0, 0.16); z-index: 2; }
-    .card.today.tv-collapsing { transform: scale(0.96) translateY(6px); opacity: 0.4; }
+    .upcoming-card.iso-lift { transform: scale(1.04); box-shadow: 0 16px 34px rgba(0, 0, 0, 0.16); z-index: 2; }
+    .card.today.iso-collapse { transform: scale(0.9); opacity: 0; }
+    @keyframes iso-mount { from { opacity: 0; transform: translateY(14px) scale(0.965); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    #daily-render-area .card.today.iso-mount { animation: iso-mount 0.3s cubic-bezier(0.22, 1, 0.36, 1) both; }
     .scroll-note { font-size: 11px; font-weight: 900; color: #d97706; margin-left: 2px; }
 
     /* Today Pill */
@@ -140,7 +142,7 @@
       flex-direction: column; 
       gap: 14px;
       box-shadow: 0 12px 32px rgba(0,0,0,0.06); 
-      transition: background 0.3s ease, border 0.3s ease;
+      transition: background 0.3s ease, border 0.3s ease, transform 0.22s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.22s cubic-bezier(0.4, 0, 0.2, 1);
       user-select: none;
       position: relative; overflow: hidden;
     }
@@ -494,26 +496,28 @@
       body * { visibility: hidden; }
       #print-area, #print-area * { visibility: visible; }
       #print-area { display: block !important; position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 0; }
-      .print-page { page-break-after: always; padding: 2px 2px; font-family: 'Inter', 'Nunito', sans-serif; color: #1e293b; }
-      .print-header { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; border-bottom: 3px solid #0284c7; padding-bottom: 10px; margin-bottom: 12px; }
-      .print-title { font-size: 28px; font-weight: 900; color: #0f172a; letter-spacing: -0.3px; }
-      .print-sub { font-size: 12.5px; font-weight: 800; color: #64748b; margin-top: 2px; }
-      .print-pageno { font-size: 12.5px; font-weight: 800; color: #64748b; text-align: right; line-height: 1.5; }
-      .print-legend { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
-      .pl-chip { font-family: 'Inter', sans-serif; font-size: 11.5px; font-weight: 800; padding: 4px 12px; border-radius: 999px; border: 1.5px solid; letter-spacing: 0.3px; }
-      .print-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 13px; }
-      .print-table th { background: #f1f5f9; color: #334155; text-align: left; padding: 10px 10px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.4px; border: 1px solid #e2e8f0; white-space: nowrap; }
-      .print-table td { border: 1px solid #e2e8f0; padding: 10px 9px; font-weight: 600; vertical-align: middle; }
-      .print-table tr.weekend td { background: #f8fafc; }
+      .print-page { page-break-after: always; padding: 0 2px; font-family: 'Inter', 'Nunito', sans-serif; color: #1e293b; }
+      .print-header { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; border-bottom: 3px solid #0284c7; padding-bottom: 9px; margin-bottom: 10px; }
+      .print-title { font-size: 28px; font-weight: 900; color: #0f172a; letter-spacing: -0.5px; }
+      .print-sub { font-size: 13px; font-weight: 800; color: #64748b; margin-top: 3px; }
+      .print-pageno { font-size: 13px; font-weight: 800; color: #64748b; text-align: right; line-height: 1.5; }
+      .print-legend { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+      .pl-chip { font-family: 'Inter', sans-serif; font-size: 12.5px; font-weight: 800; padding: 4px 12px; border-radius: 999px; border: 1.5px solid; letter-spacing: 0.3px; }
+      .print-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 14px; }
+      .print-table th { background: #eef4fb; color: #334155; text-align: left; padding: 9px 8px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.4px; border: 1px solid #dbe4ee; white-space: nowrap; }
+      .print-table td { border: 1px solid #dbe4ee; padding: 7px 8px; font-weight: 600; vertical-align: middle; }
+      .print-table tbody tr:nth-child(even) td { background: #f8fafc; }
+      .print-table tr.weekend td { background: #eef4fb; }
       .print-table tr.today td { background: #dbeafe; }
       .print-table tr.today .pc-day { box-shadow: inset 0 0 0 2px #0284c7; border-radius: 8px; }
-      .pc-day { font-weight: 900; font-size: 15px; text-align: center; }
-      .pc-weekday { font-weight: 800; text-align: center; color: #475569; font-size: 12.5px; }
-      .pc-type { font-weight: 800; border-radius: 8px; text-align: center; font-size: 12.5px; white-space: nowrap; padding: 6px 8px; overflow: hidden; text-overflow: ellipsis; }
+      .pc-day { font-weight: 900; font-size: 16px; text-align: center; }
+      .pc-weekday { font-weight: 800; text-align: center; color: #475569; font-size: 13px; }
+      .pc-type { font-weight: 800; text-align: center; font-size: 13px; overflow: hidden; text-overflow: ellipsis; }
+      .pc-note { color: #d97706; font-weight: 900; margin-left: 3px; }
       .pc-name { font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-      .print-footer { margin-top: 12px; font-size: 12px; color: #94a3b8; font-weight: 700; }
+      .print-footer { margin-top: 8px; font-size: 12.5px; color: #64748b; font-weight: 700; }
     }
-    @page { size: A4 landscape; margin: 12mm; }
+    @page { size: A4 landscape; margin: 8mm; }
 
     /* RESPONSIVE DESKTOP */
     @media (min-width: 768px) {
@@ -797,6 +801,7 @@ EXAMPLE — follow this exact shape (replace the values):
     let realTodayIndex = 0;
     let currentIndex = 0;
     let activeNoteDate = null;
+    let expandMountFor = -1;
 
     function triggerHaptic(ms = 30) {
       if (navigator.vibrate) navigator.vibrate(ms);
@@ -1223,7 +1228,7 @@ EXAMPLE — follow this exact shape (replace the values):
       return '9 AM – 5 PM';
     }
 
-    function mainCardHtml(data) {
+    function mainCardHtml(data, mountCls = '') {
       if (!data) return '';
       
       let detailsHtml = '';
@@ -1287,7 +1292,7 @@ EXAMPLE — follow this exact shape (replace the values):
         : '';
 
       return `
-        <div class="card today type-${data.type}" id="dailyCardElement" data-date="${data.date}">
+        <div class="card today type-${data.type}${mountCls}" id="dailyCardElement" data-date="${data.date}">
           <div class="card-header">
             <div>
               <span class="card-label">Selected Roster Day</span>
@@ -1324,7 +1329,12 @@ EXAMPLE — follow this exact shape (replace the values):
       }
       const mon = rosterMeta.month.split(' ')[0];
       roster.forEach((d, i) => {
-        if (i === currentIndex) { html += mainCardHtml(d); return; }
+        if (i === currentIndex) {
+          const mountCls = expandMountFor === i ? ' iso-mount' : '';
+          expandMountFor = -1;
+          html += mainCardHtml(d, mountCls);
+          return;
+        }
         const past = i < currentIndex ? ' scroll-past' : '';
         const noteMark = notesDB[d.date] ? '<span class="scroll-note">*</span>' : '';
         html += `
@@ -1358,13 +1368,14 @@ EXAMPLE — follow this exact shape (replace the values):
       triggerHaptic(25);
       const mini = document.querySelector(`#daily-render-area .upcoming-card[data-index="${idx}"]`);
       const main = document.getElementById('dailyCardElement');
-      if (mini) mini.scrollIntoView({ block: 'center', behavior: 'smooth' });
-      if (main) main.classList.add('tv-collapsing');
-      if (mini) mini.classList.add('tv-expanding');
+      if (mini && mini.scrollIntoView) mini.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      if (main) main.classList.add('iso-collapse');
+      if (mini) mini.classList.add('iso-lift');
+      expandMountFor = idx;
       setTimeout(() => {
         currentIndex = idx;
         renderScrollView();
-      }, 240);
+      }, 230);
     }
 
     function renderDailyView() {
@@ -1654,7 +1665,7 @@ EXAMPLE — follow this exact shape (replace the values):
       triggerHaptic(40);
       const el = document.getElementById('print-area');
       const total = roster.length;
-      const firstEnd = Math.min(15, total);
+      const firstEnd = Math.ceil(total / 2);
       const chunks = [[0, firstEnd - 1], [firstEnd, total - 1]].filter(([a, b]) => a <= b);
       const monthName = rosterMeta.month;
       const todayIdx = realTodayIndex;
@@ -1672,7 +1683,7 @@ EXAMPLE — follow this exact shape (replace the values):
           const c = TYPE_COLORS[d.type] || TYPE_COLORS.opd;
           rows.push(`
             <tr class="${d.day === 'Sat' ? 'weekend' : ''}${i === todayIdx ? ' today' : ''}">
-              <td class="pc-day">${d.date.split('-')[1]}</td>
+              <td class="pc-day">${d.date.split('-')[1]}${notesDB[d.date] ? '<span class="pc-note">*</span>' : ''}</td>
               <td class="pc-weekday">${d.day}</td>
               <td class="pc-type" style="background:${c.bg}; color:${c.tx};">${d.title}</td>
               <td class="pc-name">${d.ward || '—'}</td>
@@ -1700,7 +1711,7 @@ EXAMPLE — follow this exact shape (replace the values):
               </thead>
               <tbody>${rows.join('')}</tbody>
             </table>
-            <div class="print-footer">Dr. Mrinal Duty App · Today's row highlighted · Weekend rows shaded · Legend colors = your duty palette</div>
+            <div class="print-footer">Dr. Mrinal Duty App · Blue band = today · Shaded = weekend · * = note attached · Legend colors = duty palette</div>
           </div>`;
       }).join('');
       setTimeout(() => window.print(), 60);
@@ -1712,14 +1723,16 @@ EXAMPLE — follow this exact shape (replace the values):
       let startX = 0, startY = 0, axisLocked = null, tracking = false;
 
       container.addEventListener('touchstart', (e) => {
-        const t = e.touches[0];
+        const t = e.touches && e.touches[0];
+        if (!t) return;
         startX = t.clientX; startY = t.clientY;
         tracking = true; axisLocked = null;
       }, { passive: true });
 
       container.addEventListener('touchmove', (e) => {
         if (!tracking) return;
-        const t = e.touches[0];
+        const t = e.touches && e.touches[0];
+        if (!t) return;
         const dx = t.clientX - startX;
         const dy = t.clientY - startY;
         if (!axisLocked) {
@@ -1732,7 +1745,8 @@ EXAMPLE — follow this exact shape (replace the values):
         if (!tracking) return;
         tracking = false;
         if (axisLocked !== 'x') return;
-        const t = e.changedTouches[0];
+        const t = e.changedTouches && e.changedTouches[0];
+        if (!t) return;
         const dx = t.clientX - startX;
         const dy = t.clientY - startY;
         if (Math.abs(dx) >= 60 && Math.abs(dx) > Math.abs(dy) * 1.2) {
@@ -1784,8 +1798,16 @@ EXAMPLE — follow this exact shape (replace the values):
         if (longPressed) {
           longPressed = false;
           e.preventDefault();
-          const stopTap = (ev) => { ev.stopPropagation(); ev.preventDefault(); };
-          document.addEventListener('click', stopTap, { capture: true, once: true });
+          const endTime = Date.now();
+          const blocker = (ev) => {
+            if (Date.now() - endTime > 500) return;
+            if (!ev.target.closest || !ev.target.closest('.upcoming-card')) return;
+            ev.stopPropagation();
+            ev.preventDefault();
+            document.removeEventListener('click', blocker, true);
+          };
+          document.addEventListener('click', blocker, true);
+          setTimeout(() => document.removeEventListener('click', blocker, true), 700);
         }
       };
       area.addEventListener('touchstart', start, { passive: true });
