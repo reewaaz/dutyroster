@@ -1178,11 +1178,6 @@ EXAMPLE — follow this exact shape (replace the values):
       } catch (e) {}
     }
 
-    function showDutyAlert(index) {
-      if (!dutyAlertEnabled()) return;
-      dispatchNotification(index, { isTest: false, daysBefore: 0 });
-    }
-
     function initDutyAlerts() {
       refreshAlertButton();
       scheduleDutyAlerts();
