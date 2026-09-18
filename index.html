@@ -439,10 +439,11 @@
     :root[data-theme="dark"] .roster-status.ok { background: #12301f; color: #86efac; }
     :root[data-theme="dark"] .roster-status.error { background: #3a1f24; color: #fda4af; }
 
-    #daily-render-area { transition: opacity 0.22s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); will-change: opacity, transform; }
-    #daily-render-area.fade-out { opacity: 0; transform: scale(0.96) translateY(10px); }
-    #daily-render-area.fade-out.slide-left { transform: scale(0.96) translateX(-36px); }
-    #daily-render-area.fade-out.slide-right { transform: scale(0.96) translateX(36px); }
+    #daily-render-area { will-change: opacity, transform; }
+
+    .app-toast { position: fixed; bottom: 110px; left: 50%; transform: translateX(-50%); background: #1e293b; color: #f8fafc; padding: 10px 18px; border-radius: 10px; font-size: 13px; font-weight: 700; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity .25s; }
+    .app-toast.show { opacity: 1; }
+    :root[data-theme="dark"] .app-toast { background: #e2e8f0; color: #0f172a; }
 
     /* Today Highlight */
     .cal-cell.is-today .cal-date { background: var(--accent); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 10px rgba(2, 132, 199, 0.35); }
@@ -543,6 +544,7 @@
           <div class="title">🍼 Dr. Mrinal <span style="font-size: 20px;">🩺</span></div>
         </div>
         <div class="header-actions">
+          <button class="icon-btn" id="notif-toggle" onclick="toggleDutyNotifs()" aria-label="Turn on duty alerts">🔕</button>
           <button class="icon-btn" id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">🌙</button>
           <button class="icon-btn" onclick="openSearchModal()" aria-label="Search roster">🔍</button>
         </div>
@@ -550,6 +552,7 @@
     </header>
 
     <button id="today-pill" class="today-pill" onclick="goToday()"><span class="pill-dot" style="font-size:12px;">●</span> Today</button>
+    <div id="app-toast" class="app-toast"></div>
 
     <div class="view-container">
       
@@ -791,6 +794,153 @@ EXAMPLE — follow this exact shape (replace the values):
       btn.innerText = document.documentElement.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
     }
 
+    /* ---- DUTY ALERTS ---- */
+    const ALERT_KEY = 'mrinalDutyAlerts';
+    let alertTimer = null;
+
+    function dutyAlertEnabled() {
+      return typeof Notification !== 'undefined' && Notification.permission === 'granted' && localStorage.getItem(ALERT_KEY) === '1';
+    }
+
+    function dutyAlertTypes() {
+      return ['picu-day', 'picu-24', 'opd', 'er-day'];
+    }
+
+    function isDutyAlertDay(day) {
+      return day && dutyAlertTypes().includes(day.type);
+    }
+
+    function refreshAlertButton() {
+      const btn = document.getElementById('notif-toggle');
+      if (!btn) return;
+      const perms = typeof Notification !== 'undefined' ? Notification.permission : 'unsupported';
+      if (localStorage.getItem(ALERT_KEY) === '1' && perms === 'granted') {
+        btn.innerText = '🔔';
+        btn.setAttribute('aria-label', 'Turn off duty alerts');
+      } else {
+        btn.innerText = '🔕';
+        btn.setAttribute('aria-label', 'Turn on duty alerts');
+      }
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('app-toast');
+      if (!t) return;
+      t.textContent = msg;
+      t.classList.add('show');
+      clearTimeout(t._tm);
+      t._tm = setTimeout(() => t.classList.remove('show'), 2800);
+    }
+
+    function toggleDutyNotifs() {
+      triggerHaptic(20);
+      if (typeof Notification === 'undefined') { showToast('Notifications not supported here'); return; }
+
+      if (localStorage.getItem(ALERT_KEY) === '1') {
+        localStorage.setItem(ALERT_KEY, '0');
+        clearTimeout(alertTimer); alertTimer = null;
+        refreshAlertButton();
+        showToast('Duty alerts off');
+        return;
+      }
+
+      if (Notification.permission === 'denied') { showToast('Notifications blocked in browser settings'); return; }
+
+      const enable = () => {
+        localStorage.setItem(ALERT_KEY, '1');
+        refreshAlertButton();
+        scheduleDutyAlerts();
+        showDutyAlert(realTodayIndex, true);
+        showToast('Duty alerts on — every duty day 8 AM');
+      };
+
+      if (Notification.permission === 'granted') enable();
+      else Notification.requestPermission().then(p => { if (p === 'granted') enable(); else showToast('Permission not granted'); });
+    }
+
+    function indexToDate(index) {
+      const s = getRosterStart();
+      return new Date(s.getTime() + index * 86400000);
+    }
+
+    function nextDutyAlertTarget(fromIndex, fromTime) {
+      for (let i = fromIndex; i < roster.length; i++) {
+        if (!isDutyAlertDay(roster[i])) continue;
+        const when = indexToDate(i);
+        when.setHours(8, 0, 0, 0);
+        if (when.getTime() > fromTime.getTime()) return { index: i, when };
+      }
+      return null;
+    }
+
+    function scheduleDutyAlerts() {
+      clearTimeout(alertTimer); alertTimer = null;
+      if (!dutyAlertEnabled()) return;
+      const from = new Date();
+      const target = nextDutyAlertTarget(realTodayIndex, from);
+      if (!target) return;
+      const wait = target.when.getTime() - from.getTime();
+      alertTimer = setTimeout(() => {
+        showDutyAlert(target.index, false);
+        scheduleDutyAlerts();
+      }, Math.max(wait, 1000));
+    }
+
+    function findHandoverName(toIndex) {
+      for (let i = toIndex - 1; i >= 0; i--) {
+        if (roster[i].type === 'picu-24') return roster[i].picu;
+      }
+      return null;
+    }
+
+    function buildDutyAlert(title, index) {
+      const d = roster[index];
+      if (!d) return title;
+      const parts = [];
+      if (d.type === 'picu-24') {
+        parts.push(`PICU 24h: ${d.picu}`);
+        parts.push(`Ward/ER: ${d.ward === '—' ? d.ward : d.ward}`);
+        const handover = findHandoverName(index);
+        if (handover) parts.push(`Take over from ${handover}`);
+      } else if (d.type === 'picu-day') {
+        parts.push(`PICU: ${d.picu}`);
+        parts.push(`Ward/ER: ${d.ward}`);
+      } else if (d.type === 'opd') {
+        parts.push(`OPD: ${d.opd}`);
+      } else if (d.type === 'er-day') {
+        parts.push(`ER: ${d.er}`);
+        parts.push(`Ward/ER: ${d.ward}`);
+      } else {
+        parts.push(d.title);
+      }
+      if (d.nicu && d.nicu !== '—') parts.push(`NICU: ${d.nicu}`);
+      return `${title}\n${parts.slice(0, 6).join(' · ')}`;
+    }
+
+    function showDutyAlert(index, isTest) {
+      if (!dutyAlertEnabled()) return;
+      if (index < 0 || index >= roster.length) return;
+      const d = roster[index];
+      const month = rosterMeta.month.split(' ')[0];
+      const dayNum = d.date.split('-')[1];
+      const title = `${isTest ? '🔔 Test: ' : ''}On duty — ${month} ${dayNum} (${d.day}) · ${d.title}`;
+      new Notification(title, {
+        body: buildDutyAlert(title, index),
+        icon: './icons/icon-192.png',
+        badge: './icons/icon-192.png',
+        tag: `duty-${d.date}`,
+        requireInteraction: false
+      }).addEventListener('click', () => {
+        window.focus();
+        jumpToDate(index);
+      });
+    }
+
+    function initDutyAlerts() {
+      refreshAlertButton();
+      scheduleDutyAlerts();
+    }
+
     /* ---- DATA HELPERS ---- */
     function getRosterStart() {
       return new Date(rosterMeta.startDate + 'T00:00:00');
@@ -939,21 +1089,52 @@ EXAMPLE — follow this exact shape (replace the values):
       `;
     }
 
-    function renderDailyView(direction) {
-      const renderArea = document.getElementById('daily-render-area');
-      renderArea.classList.add('fade-out');
-      if (direction === 'left') renderArea.classList.add('slide-left');
-      else if (direction === 'right') renderArea.classList.add('slide-right');
-      
-      setTimeout(() => {
-        const mainData = roster[currentIndex];
-        renderArea.innerHTML = generateCard(mainData);
+    function renderDailyView(direction, enterOnly) {
+      const area = document.getElementById('daily-render-area');
+      const toNext = direction === 'right';
+
+      const enterArea = (startX) => {
+        area.innerHTML = generateCard(roster[currentIndex]);
+        area.style.transition = 'none';
+        area.style.transform = `translateX(${startX}%) scale(0.985)`;
+        area.style.opacity = '0';
         requestAnimationFrame(() => {
-          renderArea.classList.remove('fade-out', 'slide-left', 'slide-right');
+          requestAnimationFrame(() => {
+            area.style.transition = 'transform 0.40s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.30s ease';
+            area.style.transform = 'translateX(0) scale(1)';
+            area.style.opacity = '1';
+            setTimeout(() => {
+              area.style.transition = '';
+              area.style.transform = '';
+              area.style.opacity = '';
+            }, 460);
+          });
         });
         markPillOverflow();
         updateTodayPill();
-      }, 120);
+      };
+
+      if (!direction) {
+        area.innerHTML = generateCard(roster[currentIndex]);
+        markPillOverflow();
+        updateTodayPill();
+        return;
+      }
+
+      if (enterOnly) { enterArea(toNext ? 100 : -100); return; }
+
+      const exitX = toNext ? -40 : 40;
+      area.style.transition = 'none';
+      area.style.transform = 'translateX(0) scale(1)';
+      area.style.opacity = '1';
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          area.style.transition = 'transform 0.20s cubic-bezier(0.55, 0, 1, 0.45), opacity 0.20s ease';
+          area.style.transform = `translateX(${exitX}%)`;
+          area.style.opacity = '0';
+        });
+      });
+      setTimeout(() => enterArea(toNext ? 100 : -100), 210);
     }
 
     function renderMonthView() {
@@ -1272,6 +1453,7 @@ EXAMPLE — follow this exact shape (replace the values):
       renderMonthView();
       renderDailyView();
       setRosterStatus('', true);
+      scheduleDutyAlerts();
     }
 
     function resetRoster() {
@@ -1284,6 +1466,7 @@ EXAMPLE — follow this exact shape (replace the values):
       closeRosterModal();
       renderMonthView();
       renderDailyView();
+      scheduleDutyAlerts();
     }
 
     /* ---- PRINT ---- */
@@ -1370,11 +1553,16 @@ EXAMPLE — follow this exact shape (replace the values):
         if (axisLocked === 'x' && Math.abs(dx) >= swipeThreshold && Math.abs(dx) > Math.abs(dy)) {
           const step = dx < 0 ? 1 : -1;
           const nextIndex = currentIndex + step;
-          area.style.transform = '';
-          area.style.transition = '';
-          area.style.opacity = '';
           if (nextIndex >= 0 && nextIndex < roster.length) {
-            changeDay(step);
+            const travel = dx < 0 ? -110 : 110;
+            area.style.transition = 'transform 0.22s cubic-bezier(0.55, 0, 1, 0.45), opacity 0.2s ease';
+            area.style.transform = `translateX(${travel}%)`;
+            area.style.opacity = '0';
+            setTimeout(() => {
+              currentIndex = nextIndex;
+              triggerHaptic(30);
+              renderDailyView(dx < 0 ? 'right' : 'left', true);
+            }, 230);
           } else {
             area.style.transition = 'transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease';
             area.style.transform = 'translateX(0) scale(1)';
@@ -1444,6 +1632,7 @@ EXAMPLE — follow this exact shape (replace the values):
     initSwipeGestures();
     initCardLongPress();
     updateTodayPill();
+    initDutyAlerts();
 
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js?v=2').catch(() => {});
