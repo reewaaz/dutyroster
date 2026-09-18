@@ -1,0 +1,1521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#f1f5f9" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0b1220" media="(prefers-color-scheme: dark)">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Crect%20width='100'%20height='100'%20rx='24'%20fill='%23f1f5f9'/%3E%3Ccircle%20cx='50'%20cy='50'%20r='34'%20fill='white'/%3E%3Ctext%20x='50'%20y='58'%20font-size='46'%20text-anchor='middle'%3E%F0%9F%A9%BA%3C/text%3E%3C/svg%3E">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Duty App">
+  <title>Dr. Mrinal | Duty App</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Inter:wght@500;700;800;900&display=swap');
+
+    :root {
+      --bg: #fcfbfa;
+      --header-bg: #f1f5f9;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --nav-bg: rgba(255, 255, 255, 0.92);
+      --accent: #0284c7;
+      
+      /* Color Palette */
+      --picu-day-bg: #f3e8ff; --picu-day-txt: #7e22ce;
+      --picu-24-bg: #ffe4e6; --picu-24-txt: #e11d48;
+      --opd-bg: #e0f2fe; --opd-txt: #0284c7;
+      --er-day-bg: #ffedd5; --er-day-txt: #c2410c;
+      --off-bg: #dcfce7; --off-txt: #15803d;
+      --post-off-bg: #f1f5f9; --post-off-txt: #475569;
+    }
+
+    /* DARK MODE */
+    :root[data-theme="dark"] {
+      --bg: #0b1220;
+      --header-bg: #0f1a2e;
+      --text-main: #e2e8f0;
+      --text-muted: #8fa3bd;
+      --nav-bg: rgba(15, 26, 46, 0.92);
+      --accent: #38bdf8;
+
+      --picu-day-bg: #271a38; --picu-day-txt: #d8b4fe;
+      --picu-24-bg: #341c22; --picu-24-txt: #fda4af;
+      --opd-bg: #0f2c45; --opd-txt: #7dd3fc;
+      --er-day-bg: #33230f; --er-day-txt: #fdba74;
+      --off-bg: #0f2a1c; --off-txt: #86efac;
+      --post-off-bg: #182235; --post-off-txt: #b6c3d4;
+      color-scheme: dark;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    
+    body { 
+      background: var(--bg); 
+      color: var(--text-main); 
+      font-family: 'Nunito', sans-serif; 
+      display: flex; justify-content: center; 
+      overflow: hidden; height: 100vh; height: 100dvh;
+    }
+
+    .app-container {
+      width: 100%; max-width: 440px; height: 100%;
+      background: radial-gradient(circle at top right, #f8fafc 0%, #fcfbfa 50%, #f1f5f9 100%);
+      position: relative; display: flex; flex-direction: column;
+      box-shadow: 0 0 40px rgba(0,0,0,0.04);
+    }
+    :root[data-theme="dark"] .app-container {
+      background: radial-gradient(circle at top right, #0d1526 0%, #0b1220 50%, #0f1a2e 100%);
+    }
+
+    /* Fixed Header */
+    header { 
+      padding: 36px 20px 16px; 
+      background: var(--header-bg);
+      border-bottom-left-radius: 28px;
+      border-bottom-right-radius: 28px;
+      flex-shrink: 0; 
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.03);
+    }
+    .header-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+    .header-actions { display: flex; gap: 10px; margin-top: 10px; }
+    .icon-btn { width: 44px; height: 44px; border: none; border-radius: 15px; background: rgba(255, 255, 255, 0.7); box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05); font-size: 19px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.18s ease; -webkit-tap-highlight-color: transparent; }
+    .icon-btn:active { transform: scale(0.9); }
+    :root[data-theme="dark"] .icon-btn { background: rgba(30, 41, 59, 0.7); }
+    .greeting { font-family: 'Inter', sans-serif; font-size: 12px; color: #64748b; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+    .title { font-size: 24px; font-weight: 900; color: #1e293b; letter-spacing: -0.5px; display: flex; align-items: center; gap: 8px; }
+    :root[data-theme="dark"] .greeting { color: #8fa3bd; }
+
+    /* View Container */
+    .view-container { 
+      flex: 1; position: relative; overflow: hidden; padding: 16px 16px calc(88px + env(safe-area-inset-bottom)); 
+      display: flex; flex-direction: column; min-height: 0;
+      touch-action: manipulation;
+    }
+    
+    .tab-content { 
+      display: none; opacity: 0; transform: translateY(15px); 
+      transition: opacity 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); 
+      flex: 1; flex-direction: column; min-height: 0; 
+    }
+    .tab-content.active { display: flex; opacity: 1; transform: translateY(0); }
+
+    /* DAILY VIEW STYLES */
+    #view-daily { display: none; flex-direction: column; touch-action: pan-y; }
+    #view-daily.active { display: flex; }
+
+    /* MY DUTY VIEW STYLES */
+    #view-myduty { overflow-y: auto; scrollbar-width: none; }
+    #view-myduty.active { display: flex; flex-direction: column; }
+    #view-myduty::-webkit-scrollbar { display: none; }
+    .myduty-summary { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin: 4px 4px 12px; }
+    .myduty-card { border-radius: 22px; padding: 16px; margin-bottom: 10px; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05); cursor: pointer; display: flex; flex-direction: column; gap: 10px; user-select: none; -webkit-tap-highlight-color: transparent; transition: transform 0.15s ease; }
+    .myduty-card:active { transform: scale(0.98); }
+    .myduty-card-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .myduty-day { font-size: 21px; font-weight: 900; color: var(--text-main); line-height: 1.1; }
+    .myduty-week { font-size: 12px; color: var(--text-muted); font-weight: 800; }
+    .myduty-empty { text-align: center; color: var(--text-muted); font-weight: 800; padding: 40px 10px; }
+
+    /* Today Pill */
+    .today-pill { position: absolute; top: 22px; right: 16px; z-index: 30; background: var(--accent); color: #fff; border: none; padding: 12px 20px; border-radius: 999px; font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 14px; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 16px rgba(2, 132, 199, 0.4); cursor: pointer; opacity: 0; transform: translateY(-6px) scale(0.9); pointer-events: none; transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); -webkit-tap-highlight-color: transparent; }
+    .today-pill.visible { opacity: 1; transform: none; pointer-events: auto; }
+    .today-pill:active { transform: scale(0.94); }
+
+    #daily-render-area {
+      width: 100%; display: flex; flex-direction: column;
+      flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch;
+      scroll-padding-bottom: 16px;
+    }
+    #daily-render-area::-webkit-scrollbar { display: none; }
+
+    /* Natural Card Layout */
+    .card.today { 
+      border-radius: 28px; 
+      padding: 22px 20px; 
+      width: 100%;
+      display: flex; 
+      flex-direction: column; 
+      gap: 14px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.06); 
+      transition: background 0.3s ease, border 0.3s ease;
+      user-select: none;
+      position: relative; overflow: hidden;
+    }
+    
+    /* Card Background Color Variants */
+    .card.today.type-picu-day, .upcoming-card.type-picu-day { background: var(--picu-day-bg); border: 2px solid rgba(126, 34, 206, 0.18); }
+    .card.today.type-picu-24, .upcoming-card.type-picu-24 { background: var(--picu-24-bg); border: 2px solid rgba(225, 29, 72, 0.18); }
+    .card.today.type-opd, .upcoming-card.type-opd { background: var(--opd-bg); border: 2px solid rgba(2, 132, 199, 0.18); }
+    .card.today.type-er-day, .upcoming-card.type-er-day { background: var(--er-day-bg); border: 2px solid rgba(194, 65, 12, 0.18); }
+    .card.today.type-off, .upcoming-card.type-off { background: var(--off-bg); border: 2px dashed #86efac; }
+    .card.today.type-post-off, .upcoming-card.type-post-off { background: var(--post-off-bg); border: 2px solid rgba(71, 85, 105, 0.18); }
+
+    /* Compact 24h Cards */
+    .card.today.type-picu-24 {
+      padding: 16px 16px;
+      gap: 10px;
+      border-radius: 24px;
+    }
+    .card.today.type-picu-24 .date-num {
+      font-size: 25px;
+    }
+    .card.today.type-picu-24 .card-header {
+      padding-bottom: 8px;
+    }
+    .card.today.type-picu-24 .badge {
+      padding: 7px 12px;
+      font-size: 11px;
+    }
+
+    .card-label { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid rgba(0,0,0,0.08); padding-bottom: 12px; }
+    :root[data-theme="dark"] .card-header { border-bottom-color: rgba(148, 163, 184, 0.18); }
+    .date-num { font-size: 30px; font-weight: 900; color: var(--text-main); display: block; line-height: 1.1; }
+    .day-name { font-size: 15px; color: var(--text-muted); font-weight: 800; }
+    
+    .badge { padding: 9px 15px; border-radius: 14px; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px; background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
+    :root[data-theme="dark"] .badge, :root[data-theme="dark"] .upcoming-badge { background: #1e293b; }
+    
+    .card-body-content { display: flex; flex-direction: column; gap: 10px; }
+    .team-label { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.5px; }
+    
+    /* 2-Column Grid Layout for Assignments (2 Rows instead of 4) */
+    .duty-list { 
+      display: grid; 
+      grid-template-columns: repeat(2, 1fr); 
+      gap: 8px; 
+    }
+    .duty-row { 
+      display: flex; 
+      flex-direction: column; 
+      justify-content: center; 
+      align-items: flex-start; 
+      background: rgba(255, 255, 255, 0.92); 
+      padding: 8px 12px; 
+      border-radius: 14px; 
+      border: 1px solid rgba(255,255,255,0.7); 
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02); 
+    }
+    :root[data-theme="dark"] .duty-row { background: rgba(30, 41, 59, 0.85); border-color: rgba(148, 163, 184, 0.12); }
+    .duty-k { font-family: 'Inter', sans-serif; font-weight: 900; color: var(--text-muted); font-size: 10px; text-transform: uppercase; margin-bottom: 2px; }
+    .duty-v { font-weight: 800; color: var(--text-main); font-size: 14px; }
+
+    .pills { display: flex; flex-wrap: wrap; gap: 6px; max-height: 120px; overflow-y: auto; scrollbar-width: none; padding: 2px 0; }
+    .pills::-webkit-scrollbar { display: none; }
+    .pill { background: rgba(255, 255, 255, 0.95); color: #1e293b; padding: 9px 14px; border-radius: 14px; font-size: 14px; font-weight: 800; border: 1px solid rgba(255,255,255,0.9); box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
+    :root[data-theme="dark"] .pill { background: rgba(30, 41, 59, 0.9); color: #e2e8f0; border-color: transparent; box-shadow: 0 2px 6px rgba(0,0,0,0.25); }
+    
+    .second-call { padding: 9px 14px; background: rgba(0, 0, 0, 0.05); border-radius: 14px; display: flex; align-items: center; justify-content: space-between; border: 1px solid rgba(0,0,0,0.06); box-shadow: inset 0 1px 3px rgba(255,255,255,0.4); }
+    :root[data-theme="dark"] .second-call { background: rgba(148, 163, 184, 0.12); border-color: rgba(148, 163, 184, 0.15); }
+    .second-call-label { font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 900; color: #475569; text-transform: uppercase; }
+    .second-call-name { font-size: 14px; font-weight: 900; color: #0f172a; }
+    :root[data-theme="dark"] .second-call-label { color: #94a3b8; }
+    :root[data-theme="dark"] .second-call-name { color: #f1f5f9; }
+
+    .card-note-badge { display: inline-flex; align-items: center; gap: 5px; background: #0f172a; color: white; padding: 5px 10px; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); margin-top: 4px; }
+    :root[data-theme="dark"] .card-note-badge { background: #1e293b; color: #e2e8f0; }
+    .daily-note { padding: 10px 12px; background: rgba(254, 249, 195, 0.95); border-radius: 14px; border: 2px dashed #fde047; font-size: 13px; font-weight: 800; color: #713f12; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+    :root[data-theme="dark"] .daily-note { background: rgba(253, 230, 138, 0.12); border-color: #a16207; color: #fde68a; }
+
+    /* Roster Expired Card */
+    .expired-card { border-radius: 22px; padding: 18px 16px; margin-bottom: 14px; background: linear-gradient(135deg, #fef3c7, #fde68a); border: 2px dashed #f59e0b; cursor: pointer; text-align: center; box-shadow: 0 8px 20px rgba(245, 158, 11, 0.15); }
+    :root[data-theme="dark"] .expired-card { background: linear-gradient(135deg, #3a2c10, #2f250e); border-color: #b45309; }
+    .expired-title { font-size: 15px; font-weight: 900; color: #92400e; }
+    .expired-sub { font-size: 12px; font-weight: 800; color: #b45309; margin: 4px 0 10px; }
+    :root[data-theme="dark"] .expired-title { color: #fcd34d; }
+    :root[data-theme="dark"] .expired-sub { color: #fbbf24; }
+    .expired-cta { display: inline-block; background: #d97706; color: white; padding: 9px 16px; border-radius: 12px; font-size: 13px; font-weight: 900; }
+
+    /* UPCOMING DAYS STYLES */
+    .upcoming-container {
+      margin-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .upcoming-header {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 900;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-left: 4px;
+    }
+    .upcoming-card {
+      padding: 10px 14px;
+      border-radius: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.03);
+      user-select: none;
+    }
+    .upcoming-card:active {
+      transform: scale(0.97);
+    }
+    .upcoming-date-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .upcoming-day {
+      font-size: 14px;
+      font-weight: 900;
+      color: var(--text-main);
+    }
+    .upcoming-weekday {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--text-muted);
+    }
+    .upcoming-badge {
+      padding: 5px 10px;
+      border-radius: 10px;
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    }
+    .upcoming-badge.type-picu-day { color: var(--picu-day-txt); }
+    .upcoming-badge.type-picu-24 { color: var(--picu-24-txt); }
+    .upcoming-badge.type-opd { color: var(--opd-txt); }
+    .upcoming-badge.type-er-day { color: var(--er-day-txt); }
+    .upcoming-badge.type-off { color: var(--off-txt); }
+    .upcoming-badge.type-post-off { color: var(--post-off-txt); }
+
+    /* MONTH VIEW STYLES */
+    #view-month { overflow-y: auto; scrollbar-width: none; }
+    #view-month.active { display: flex; flex-direction: column; }
+    #view-month::-webkit-scrollbar { display: none; }
+
+    .generate-btn { display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--accent); color: #fff; border: none; border-radius: 16px; padding: 13px 16px; font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 14px; cursor: pointer; margin-bottom: 12px; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.25); transition: transform 0.18s ease; }
+    .generate-btn:active { transform: scale(0.98); }
+    
+    .calendar-wrapper { background: white; border-radius: 28px; padding: 16px 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.03); border: 1px solid #f1f5f9; display: flex; flex-direction: column; }
+    :root[data-theme="dark"] .calendar-wrapper { background: #0f1a2e; border-color: #1e293b; }
+    .cal-topbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 4px; }
+    .cal-month-title { font-weight: 900; text-align: center; color: var(--text-main); font-size: 17px; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cal-print-btn { width: 38px; height: 38px; font-size: 16px; border-radius: 12px; flex-shrink: 0; }
+
+    .cal-header { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; margin-bottom: 10px; margin-top: 12px; }
+    .cal-header span { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; }
+    
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; align-content: start; }
+    .cal-cell { min-height: 68px; padding: 6px 2px; border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease; position: relative; user-select: none; -webkit-user-select: none; }
+    .cal-cell:active { transform: scale(0.94); }
+    .cal-cell.pressed { transform: scale(0.94); box-shadow: inset 0 3px 10px rgba(0,0,0,0.12); }
+    .cal-cell.empty { background: transparent; cursor: default; }
+    .cal-cell .cal-date { font-size: 20px; font-weight: 900; display: inline-flex; align-items: flex-start; justify-content: center; }
+    
+    .note-asterisk { font-weight: 900; font-size: 18px; line-height: 1; margin-left: 1px; color: inherit; }
+    .fest-mark { font-size: 11px; line-height: 1; margin-left: 1px; color: #d97706; }
+
+    .cal-cell.is-festival { box-shadow: inset 0 0 0 2px #d97706; }
+    :root[data-theme="dark"] .cal-cell.is-festival { box-shadow: inset 0 0 0 2px #f59e0b; }
+
+    /* Duty Pastel Color Mappings */
+    .type-picu-day { background: var(--picu-day-bg); color: var(--picu-day-txt); }
+    .type-picu-24 { background: var(--picu-24-bg); color: var(--picu-24-txt); }
+    .type-opd { background: var(--opd-bg); color: var(--opd-txt); }
+    .type-er-day { background: var(--er-day-bg); color: var(--er-day-txt); }
+    .type-off { background: var(--off-bg); color: var(--off-txt); }
+    .type-post-off { background: var(--post-off-bg); color: var(--post-off-txt); }
+
+    .cal-cell.type-off { border: 2px dashed #86efac; background: #f0fdf4; }
+    .cal-cell.type-post-off { border: 1px solid #cbd5e1; background: #f1f5f9; }
+    :root[data-theme="dark"] .cal-cell.type-off { border-color: #86efac; background: #0f2a1c; }
+    :root[data-theme="dark"] .cal-cell.type-post-off { border-color: #334155; background: #182235; }
+
+    /* BOTTOM NAV WITH ARROWS */
+    .bottom-nav { 
+      position: absolute; 
+      bottom: calc(12px + env(safe-area-inset-bottom)); 
+      left: 50%; 
+      transform: translateX(-50%); 
+      background: var(--nav-bg); 
+      backdrop-filter: blur(15px); 
+      -webkit-backdrop-filter: blur(15px); 
+      border-radius: 28px; 
+      display: flex; 
+      align-items: center;
+      gap: 4px;
+      padding: 6px; 
+      box-shadow: 0 8px 30px rgba(0,0,0,0.06); 
+      width: 90%; 
+      max-width: 380px; 
+      z-index: 20; 
+      border: 1px solid rgba(255,255,255,0.8); 
+    }
+    :root[data-theme="dark"] .bottom-nav { border-color: rgba(148, 163, 184, 0.12); box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45); }
+    
+    .nav-arrow-btn {
+      background: transparent;
+      border: none;
+      font-size: 24px;
+      font-weight: 900;
+      color: var(--text-main);
+      width: 36px;
+      height: 48px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.15s ease, transform 0.15s ease;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      flex-shrink: 0;
+    }
+    .nav-arrow-btn:active {
+      transform: scale(0.88);
+      background: rgba(0, 0, 0, 0.06);
+    }
+
+    .nav-item { 
+      flex: 1; 
+      text-align: center; 
+      padding: 12px 0; 
+      border-radius: 20px; 
+      font-size: 15px; 
+      font-weight: 900; 
+      color: var(--text-muted); 
+      cursor: pointer; 
+      transition: all 0.3s; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      gap: 5px; 
+      font-family: 'Nunito', sans-serif; 
+    }
+    .nav-item.active { background: white; color: var(--accent); box-shadow: 0 4px 14px rgba(0,0,0,0.06); }
+    :root[data-theme="dark"] .nav-item.active { background: #1e293b; }
+
+    /* NOTE MODAL */
+    .modal-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.35); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); z-index: 100; display: none; opacity: 0; transition: opacity 0.3s; justify-content: center; align-items: center; padding: 20px; }
+    .modal-overlay.show { display: flex; opacity: 1; }
+    .modal-card { background: white; width: 100%; max-width: 320px; border-radius: 28px; padding: 22px; transform: scale(0.9); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 16px 40px rgba(0,0,0,0.1); }
+    :root[data-theme="dark"] .modal-card { background: #0f1a2e; }
+    .modal-overlay.show .modal-card { transform: scale(1); }
+    .modal-header { font-size: 18px; font-weight: 900; margin-bottom: 12px; color: var(--text-main); display: flex; justify-content: space-between; align-items: center; }
+    .modal-close-x { font-size: 18px; font-weight: 900; color: var(--text-muted); cursor: pointer; padding: 2px 6px; border-radius: 10px; }
+    .modal-close-x:active { background: rgba(0,0,0,0.08); }
+    .modal-textarea { width: 100%; height: 110px; border: 2px solid #e2e8f0; border-radius: 16px; padding: 14px; font-size: 15px; font-family: 'Nunito', sans-serif; resize: none; margin-bottom: 14px; outline: none; transition: border 0.2s; font-weight: 700; color: #1e293b; }
+    :root[data-theme="dark"] .modal-textarea { background: #0b1220; border-color: #29374f; color: #e2e8f0; }
+    .modal-textarea:focus { border-color: var(--accent); }
+    .modal-actions { display: flex; gap: 10px; }
+    .modal-btn { flex: 1; padding: 14px; border-radius: 16px; font-size: 16px; font-weight: 900; border: none; cursor: pointer; transition: transform 0.2s; font-family: 'Nunito', sans-serif;}
+    .modal-btn:active { transform: scale(0.95); }
+    .btn-cancel { background: #f1f5f9; color: #475569; }
+    :root[data-theme="dark"] .btn-cancel { background: #1e293b; color: #cbd5e1; }
+    .btn-save { background: var(--accent); color: white; }
+
+    /* SEARCH MODAL */
+    .modal-card.search-card { max-width: 380px; max-height: 82%; display: flex; flex-direction: column; }
+    .search-input { width: 100%; border: 2px solid #e2e8f0; border-radius: 16px; padding: 13px 14px; font-size: 15px; font-family: 'Nunito', sans-serif; font-weight: 700; outline: none; margin-bottom: 12px; background: #f8fafc; color: #1e293b; transition: border 0.2s; }
+    .search-input:focus { border-color: var(--accent); }
+    :root[data-theme="dark"] .search-input { background: #0b1220; border-color: #29374f; color: #e2e8f0; }
+    .search-results { flex: 1; overflow-y: auto; min-height: 120px; scrollbar-width: none; }
+    .search-results::-webkit-scrollbar { display: none; }
+    .search-hint { font-size: 13px; color: var(--text-muted); font-weight: 700; text-align: center; padding: 18px 4px; }
+    .search-result { display: flex; justify-content: space-between; align-items: center; gap: 8px; background: #f8fafc; padding: 10px 12px; border-radius: 14px; margin-bottom: 8px; cursor: pointer; border-left: 4px solid transparent; transition: transform 0.15s ease; }
+    .search-result:active { transform: scale(0.98); }
+    :root[data-theme="dark"] .search-result { background: rgba(30, 41, 59, 0.6); }
+    .search-result.type-picu-day { border-left-color: var(--picu-day-txt); }
+    .search-result.type-picu-24 { border-left-color: var(--picu-24-txt); }
+    .search-result.type-opd { border-left-color: var(--opd-txt); }
+    .search-result.type-er-day { border-left-color: var(--er-day-txt); }
+    .search-result.type-off { border-left-color: var(--off-txt); }
+    .search-result.type-post-off { border-left-color: var(--post-off-txt); }
+    .search-result-date { font-size: 14px; font-weight: 900; color: var(--text-main); }
+    .search-result-week { font-size: 12px; color: var(--text-muted); font-weight: 800; }
+    .search-result-roles { font-size: 11px; font-weight: 800; color: var(--accent); margin-top: 2px; }
+
+    /* GENERATE ROSTER MODAL */
+    .modal-card.roster-card { max-width: 380px; }
+    .roster-steps { font-size: 12.5px; font-weight: 700; color: var(--text-muted); background: #f1f5f9; border-radius: 14px; padding: 10px 12px; margin-bottom: 12px; line-height: 1.6; }
+    :root[data-theme="dark"] .roster-steps { background: #182235; }
+    .roster-textarea { height: 170px; font-size: 12px; font-family: 'Courier New', monospace; white-space: pre; }
+    .roster-status { font-size: 12.5px; font-weight: 800; border-radius: 12px; padding: 9px 11px; margin-bottom: 12px; display: none; }
+    .roster-status.ok { display: block; background: #dcfce7; color: #15803d; }
+    .roster-status.error { display: block; background: #ffe4e6; color: #be123c; }
+    :root[data-theme="dark"] .roster-status.ok { background: #12301f; color: #86efac; }
+    :root[data-theme="dark"] .roster-status.error { background: #3a1f24; color: #fda4af; }
+
+    #daily-render-area { transition: opacity 0.22s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); will-change: opacity, transform; }
+    #daily-render-area.fade-out { opacity: 0; transform: scale(0.96) translateY(10px); }
+    #daily-render-area.fade-out.slide-left { transform: scale(0.96) translateX(-36px); }
+    #daily-render-area.fade-out.slide-right { transform: scale(0.96) translateX(36px); }
+
+    /* Today Highlight */
+    .cal-cell.is-today .cal-date { background: var(--accent); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 10px rgba(2, 132, 199, 0.35); }
+
+    /* Pill Overflow Indicator */
+    .pills.has-overflow { -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) calc(100% - 22px), rgba(0,0,0,0)); mask-image: linear-gradient(to bottom, rgba(0,0,0,1) calc(100% - 22px), rgba(0,0,0,0)); }
+
+    /* ---- ANIMATIONS ---- */
+    @keyframes fadeDown { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: none; } }
+    @keyframes fadeUp   { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+    @keyframes popIn    { from { opacity: 0; transform: scale(0.88) translateY(6px); } to { opacity: 1; transform: none; } }
+    @keyframes popScale { from { opacity: 0; transform: scale(0.7); } to { opacity: 1; transform: none; } }
+    @keyframes ringPulse { 0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.45); } 70% { box-shadow: 0 0 0 9px rgba(255,255,255,0); } 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); } }
+    @keyframes shimmer  { 0% { transform: translateX(-100%); } 100% { transform: translateX(120%); } }
+    @keyframes breathe  { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+    @keyframes slideUp  { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: none; } }
+
+    .greeting { animation: fadeDown 0.55s cubic-bezier(0.22, 1, 0.36, 1) backwards; }
+    .title    { animation: fadeDown 0.55s cubic-bezier(0.22, 1, 0.36, 1) backwards; animation-delay: 0.06s; }
+
+    .card.today > *            { animation: fadeUp 0.48s cubic-bezier(0.22, 1, 0.36, 1) backwards; }
+    .card.today > *:nth-child(1) { animation-delay: 0.03s; }
+    .card.today > *:nth-child(2) { animation-delay: 0.10s; }
+    .card.today > *:nth-child(3) { animation-delay: 0.17s; }
+    .card.today > *:nth-child(4) { animation-delay: 0.24s; }
+
+    .card.today.type-off::before {
+      content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+      background: linear-gradient(110deg, transparent 28%, rgba(255,255,255,0.55) 46%, rgba(255,255,255,0.7) 50%, rgba(255,255,255,0.55) 54%, transparent 72%);
+      animation: shimmer 3s ease-in-out 0.8s infinite;
+    }
+    .card.today.type-off > * { position: relative; z-index: 1; }
+
+    .duty-row { transition: transform 0.15s ease, box-shadow 0.15s ease; }
+    .duty-row:active { transform: scale(0.975); box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+    .second-call { transition: transform 0.15s ease; }
+    .second-call:active { transform: scale(0.985); }
+
+    .badge { animation: popIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) backwards; animation-delay: 0.05s; }
+    .card-note-badge { animation: breathe 2.4s ease-in-out 0.6s infinite; }
+    .today-pill.visible .pill-dot { animation: ringPulse 1.8s ease-out infinite; }
+    .nav-item.active { animation: popScale 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) backwards; }
+    #view-month.active .cal-cell { animation: popIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) backwards; }
+    .modal-card { animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) backwards; animation-delay: 0.05s; }
+
+    /* PRINT AREA */
+    #print-area { display: none; }
+    @media print {
+      body { background: #fff; overflow: visible; }
+      body * { visibility: hidden; }
+      #print-area, #print-area * { visibility: visible; }
+      #print-area { display: block !important; position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 0; }
+      .print-page { page-break-after: always; padding: 16px 14px; font-family: 'Inter', 'Nunito', sans-serif; color: #1e293b; }
+      .print-header { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 3px solid #0284c7; padding-bottom: 8px; margin-bottom: 12px; }
+      .print-title { font-size: 22px; font-weight: 900; color: #0f172a; }
+      .print-pageno { font-size: 12px; font-weight: 800; color: #64748b; }
+      .print-table { width: 100%; border-collapse: collapse; font-size: 9.5px; }
+      .print-table th { background: #f1f5f9; color: #334155; text-align: left; padding: 6px 4px; font-size: 8.5px; text-transform: uppercase; letter-spacing: 0.4px; border: 1px solid #e2e8f0; }
+      .print-table td { border: 1px solid #e2e8f0; padding: 6px 5px; font-weight: 600; }
+      .print-table tr.weekend td { background: #f8fafc; }
+      .print-table tr.festival td { background: #fef9c3; }
+      .print-table tr.festival .pc-type { box-shadow: inset 0 0 0 2px #f59e0b; border-radius: 6px; }
+      .pc-day { font-weight: 900; font-size: 11px; text-align: center; }
+      .pc-week { font-weight: 800; text-align: center; color: #64748b; }
+      .pc-type { font-weight: 800; border-radius: 8px; text-align: center; font-size: 10px; white-space: nowrap; }
+      .print-footer { margin-top: 8px; font-size: 10px; color: #94a3b8; font-weight: 700; }
+    }
+    @page { size: A4 portrait; margin: 0; }
+
+    /* RESPONSIVE DESKTOP */
+    @media (min-width: 768px) {
+      body { overflow: auto; padding: 18px; }
+      .app-container { max-width: 760px; height: calc(100vh - 36px); height: calc(100dvh - 36px); border-radius: 32px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08); }
+      .view-container { padding: 20px 24px calc(96px + env(safe-area-inset-bottom)); }
+      .card.today { padding: 26px 24px; border-radius: 32px; }
+      .card.today.type-picu-24 { padding: 20px 20px; }
+      .duty-list { grid-template-columns: repeat(3, 1fr); }
+      .cal-grid { gap: 8px; }
+      .cal-cell { min-height: 76px; }
+      .bottom-nav { max-width: 480px; }
+    }
+    @media (min-width: 768px) and (prefers-color-scheme: dark) {
+      .app-container { box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <header>
+      <div class="header-top">
+        <div>
+          <div class="greeting" id="greetingText">Good Morning,</div>
+          <div class="title">🍼 Dr. Mrinal <span style="font-size: 20px;">🩺</span></div>
+        </div>
+        <div class="header-actions">
+          <button class="icon-btn" id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">🌙</button>
+          <button class="icon-btn" onclick="openSearchModal()" aria-label="Search roster">🔍</button>
+        </div>
+      </div>
+    </header>
+
+    <button id="today-pill" class="today-pill" onclick="goToday()"><span class="pill-dot" style="font-size:12px;">●</span> Today</button>
+
+    <div class="view-container">
+      
+      <!-- DAILY VIEW -->
+      <div id="view-daily" class="tab-content active">
+        <div id="daily-render-area"></div>
+      </div>
+
+      <!-- MY DUTY VIEW -->
+      <div id="view-myduty" class="tab-content">
+        <div id="myduty-render-area"></div>
+      </div>
+
+      <!-- MONTH VIEW -->
+      <div id="view-month" class="tab-content">
+        <button class="generate-btn" onclick="openRosterModal()">✨ Generate Roster</button>
+        <div class="calendar-wrapper">
+          <div class="cal-topbar">
+            <div id="cal-month-title" class="cal-month-title">Ashwin 2083</div>
+            <button class="icon-btn cal-print-btn" onclick="printRoster()" aria-label="Print roster">🖨️</button>
+          </div>
+          <div class="cal-header">
+            <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+          </div>
+          <div class="cal-grid" id="calendar-grid"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- BOTTOM NAV WITH INTEGRATED ARROWS -->
+    <nav class="bottom-nav">
+      <button class="nav-arrow-btn" onclick="changeDay(-1)" aria-label="Previous Day">‹</button>
+      <div class="nav-item active" onclick="switchTab('daily')" id="nav-daily">
+        <span>👶</span> Daily
+      </div>
+      <div class="nav-item" onclick="switchTab('myduty')" id="nav-myduty">
+        <span>🩺</span> My Duty
+      </div>
+      <div class="nav-item" onclick="switchTab('month')" id="nav-month">
+        <span>📅</span> Month
+      </div>
+      <button class="nav-arrow-btn" onclick="changeDay(1)" aria-label="Next Day">›</button>
+    </nav>
+
+    <!-- NOTE MODAL -->
+    <div class="modal-overlay" id="note-modal">
+      <div class="modal-card">
+        <div class="modal-header">
+          <span id="modal-title">Add Note</span>
+          <span style="font-size: 14px; font-weight: 800; color: var(--text-muted);">Note</span>
+        </div>
+        <textarea class="modal-textarea" id="modal-input" placeholder="e.g. Bring stethoscope..."></textarea>
+        <div class="modal-actions">
+          <button class="modal-btn btn-cancel" onclick="closeNoteModal()">Cancel</button>
+          <button class="modal-btn btn-save" onclick="saveNote()">Save Note</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEARCH MODAL -->
+    <div class="modal-overlay" id="search-modal">
+      <div class="modal-card search-card">
+        <div class="modal-header">
+          <span>Search Roster</span>
+          <span class="modal-close-x" onclick="closeSearchModal()">✕</span>
+        </div>
+        <input class="search-input" id="search-input" placeholder="Doctor name or duty type…" autocomplete="off" oninput="runSearch()">
+        <div class="search-results" id="search-results"></div>
+      </div>
+    </div>
+
+    <!-- GENERATE ROSTER MODAL -->
+    <div class="modal-overlay" id="roster-modal">
+      <div class="modal-card roster-card">
+        <div class="modal-header">
+          <span>Generate Roster</span>
+          <span class="modal-close-x" onclick="closeRosterModal()">✕</span>
+        </div>
+        <div class="roster-steps">
+          <b>1.</b> Open Gemini / ChatGPT and upload your roster image.<br>
+          <b>2.</b> Tap <b>Copy Template</b>, paste it into that chat along with the image.<br>
+          <b>3.</b> Copy the JSON it returns, paste it below, then <b>Validate &amp; Save</b>.
+        </div>
+        <button class="modal-btn btn-cancel" onclick="copyRosterTemplate()" style="margin-bottom:12px;">📋 Copy Template for AI</button>
+        <textarea class="modal-textarea roster-textarea" id="roster-input" placeholder='{ "month": "Ashwin 2083", "startDate": "2026-09-17", "days": [ ... ] }'></textarea>
+        <div class="roster-status" id="roster-status"></div>
+        <div class="modal-actions">
+          <button class="modal-btn btn-cancel" onclick="resetRoster()">Reset to Built-in</button>
+          <button class="modal-btn btn-save" onclick="validateAndSaveRoster()">Validate &amp; Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRINT AREA -->
+  <div id="print-area"></div>
+
+  <script>
+    const DEFAULT_ROSTER = [
+      { date: '06-01', day: 'Thu', type: 'picu-day', title: 'PICU Day', ward: 'Nischal', nicu: 'Krishna', picu: 'Aayoush', er: 'Salina', second: 'Prerana', opd: 'Saurav Singh, Prerana, Sinda, Pritha, Devaki' },
+      { date: '06-02', day: 'Fri', type: 'opd', title: 'OPD', ward: 'Salina', nicu: 'Sinda', picu: 'Srijana', er: 'Kshitiz', second: 'Saurav Singh', opd: 'Kabita, Madan, Mrinal, Pritha, Samikshya' },
+      { date: '06-03', day: 'Sat', type: 'off', title: 'Saturday OFF', ward: 'Deepmala', nicu: 'Subas', picu: 'Devaki', er: '', second: 'Dilip', opd: '' },
+      { date: '06-04', day: 'Sun', type: 'picu-24', title: '24hr PICU', ward: 'Pritha', nicu: 'Kshitiz', picu: 'Mrinal', er: 'Samichhhya', second: 'Saurav Stha', opd: 'Prerana, Shikha, Sinda, Nischal, Srijana' },
+      { date: '06-05', day: 'Mon', type: 'post-off', title: 'Post 24h OFF', ward: '', nicu: '', picu: '', er: '', second: '', opd: '' },
+      { date: '06-06', day: 'Tue', type: 'opd', title: 'OPD', ward: 'Nischal', nicu: 'Subas', picu: 'Kabita', er: 'Deepmala', second: 'Pusp Raj', opd: 'Devaki, Kshitiz, Shikha, Pritha, Mrinal' },
+      { date: '06-07', day: 'Wed', type: 'picu-day', title: 'PICU Day', ward: 'Salina', nicu: 'Shikha', picu: 'Srijana', er: 'Sinda', second: 'Dilip', opd: 'Madan, Kshitiz, Samichhhya, Prerana, Aayoush' },
+      { date: '06-08', day: 'Thu', type: 'opd', title: 'OPD', ward: 'Deepmala', nicu: 'Sinda', picu: 'Devaki', er: 'Nischal', second: 'Prerana', opd: 'Saurav Singh, Subas, Pritha, Kabita, Mrinal' },
+      { date: '06-09', day: 'Fri', type: 'picu-day', title: 'PICU Day', ward: 'Samichhhya', nicu: 'Madan', picu: 'Aayoush', er: 'Pritha', second: 'Saurav Singh', opd: 'Salina, Shikha, Kabita, Srijana, Nischal' },
+      { date: '06-10', day: 'Sat', type: 'picu-24', title: '24hr PICU', ward: 'Nischal', nicu: 'Subas', picu: 'Mrinal', er: '', second: 'Krishna', opd: '' },
+      { date: '06-11', day: 'Sun', type: 'post-off', title: 'Post 24h OFF', ward: '', nicu: '', picu: '', er: '', second: '', opd: '' },
+      { date: '06-12', day: 'Mon', type: 'picu-day', title: 'PICU Day', ward: 'Salina', nicu: 'Saurav Stha', picu: 'Srijana', er: 'Deepmala', second: 'Krishna', opd: 'Kabita, Madan, Aayoush, Nischal, Samichhhya' },
+      { date: '06-13', day: 'Tue', type: 'picu-24', title: '24hr PICU', ward: 'Samichhhya', nicu: 'Kshitiz', picu: 'Mrinal', er: 'Devaki', second: 'Pusp Raj', opd: 'Pritha, Nischal, Shikha, Madan, Kabita, Prerana' },
+      { date: '06-14', day: 'Wed', type: 'post-off', title: 'Post 24h OFF', ward: '', nicu: '', picu: '', er: '', second: '', opd: '' },
+      { date: '06-15', day: 'Thu', type: 'picu-day', title: 'PICU Day', ward: 'Nischal', nicu: 'Madan', picu: 'Devaki', er: 'Pritha', second: 'Prerana', opd: 'Saurav Singh, Kabita, Salina, Samichhhya, Kshitiz' },
+      { date: '06-16', day: 'Fri', type: 'opd', title: 'OPD', ward: 'Pritha', nicu: 'Sinda', picu: 'Kabita', er: 'Nischal', second: 'Saurav Singh', opd: 'Subas, Mrinal, Aayoush, Deepmala, Kshitiz' },
+      { date: '06-17', day: 'Sat', type: 'off', title: 'Saturday OFF', ward: 'Samichhhya', nicu: 'Shikha', picu: 'Srijana', er: '', second: 'Saurav Singh', opd: '' },
+      { date: '06-18', day: 'Sun', type: 'picu-day', title: 'PICU Day', ward: 'Salina', nicu: 'Kshitiz', picu: 'Devaki', er: 'Subas', second: 'Saurav Stha', opd: 'Kabita, Prerana, Pritha, Nischal, Sinda, Madan' },
+      { date: '06-19', day: 'Mon', type: 'er-day', title: 'Day ER', ward: 'Deepmala', nicu: 'Saurav Stha', picu: 'Aayoush', er: 'Mrinal', second: 'Krishna', opd: 'Samichhhya, Nischal, Saurav Singh, Shikha, Srijana' },
+      { date: '06-20', day: 'Tue', type: 'opd', title: 'OPD', ward: 'Pritha', nicu: 'Sinda', picu: 'Srijana', er: 'Samichhhya', second: 'Pusp Raj', opd: 'Salina, Subas, Kshitiz, Devaki, Mrinal' },
+      { date: '06-21', day: 'Wed', type: 'picu-day', title: 'PICU Day', ward: 'Samichhhya', nicu: 'Shikha', picu: 'Kabita', er: 'Kshitiz', second: 'Dilip', opd: 'Deepmala, Nischal, Subas, Aayoush, Prerana' },
+      { date: '06-22', day: 'Thu', type: 'picu-day', title: 'PICU Day', ward: 'Sinda', nicu: 'Madan', picu: 'Prerana', er: 'Srijana', second: 'Prerana', opd: 'Salina, Pritha, Saurav Singh, Kshitiz, Aayoush, Subas' },
+      { date: '06-23', day: 'Fri', type: 'picu-day', title: 'PICU Day', ward: 'Nischal', nicu: 'Subas', picu: 'Devaki', er: 'Shikha', second: 'Saurav Singh', opd: 'Pritha, Samichhhya, Sinda, Srijana, Devaki' },
+      { date: '06-24', day: 'Sat', type: 'off', title: 'Saturday OFF', ward: 'Salina', nicu: 'Kshitiz', picu: 'Aayoush', er: '', second: 'Pusp Raj', opd: '' },
+      { date: '06-25', day: 'Sun', type: 'picu-24', title: 'Ghatasthapana', ward: 'Deepmala', nicu: 'Sinda', picu: 'Mrinal', er: '', second: 'Saurav Stha', opd: 'GHATASTHAPANA' },
+      { date: '06-26', day: 'Mon', type: 'post-off', title: 'Post 24h OFF', ward: '', nicu: '', picu: '', er: '', second: '', opd: '' },
+      { date: '06-27', day: 'Tue', type: 'picu-day', title: 'PICU Day', ward: 'Samichhhya', nicu: 'Madan', picu: 'Srijana', er: 'Sinda', second: 'Pusp Raj', opd: 'Salina, Deepmala, Shikha, Kshitiz, Srijana' },
+      { date: '06-28', day: 'Wed', type: 'opd', title: 'OPD', ward: 'Nischal', nicu: 'Kshitiz', picu: 'Devaki', er: 'Aayoush', second: 'Dilip', opd: 'Prerana, Sinda, Shikha, Mrinal, Subas' },
+      { date: '06-29', day: 'Thu', type: 'picu-day', title: 'PICU Day', ward: 'Salina', nicu: 'Subas', picu: 'Prerana', er: 'Srijana', second: 'Prerana', opd: 'Pritha, Samichhhya, Saurav Singh, Sinda, Aayoush' },
+      { date: '06-30', day: 'Fri', type: 'picu-24', title: '24hr PICU', ward: 'Deepmala', nicu: 'Shikha', picu: 'Mrinal', er: 'Pritha', second: 'Saurav Singh', opd: 'Kabita, Kshitiz, Devaki, Srijana, Nischal' },
+      { date: '06-31', day: 'Sat', type: 'off', title: 'Saturday OFF', ward: 'Pritha', nicu: 'Madan', picu: 'Kabita', er: '', second: 'Saurav Stha', opd: '' }
+    ];
+
+    const DEFAULT_META = { month: 'Ashwin 2083', startDate: '2026-09-17' };
+    const ROSTER_KEY = 'mrinalRosterData';
+    const THEME_KEY = 'mrinalTheme';
+    const VALID_TYPES = ['picu-day', 'picu-24', 'opd', 'er-day', 'off', 'post-off'];
+    const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const STANDARD_TITLES = ['PICU Day', '24hr PICU', 'OPD', 'Day ER', 'Saturday OFF', 'Post 24h OFF', 'Post 24h Duty OFF', 'Public Holiday / Off'];
+    const TYPE_COLORS = {
+      'picu-day': { bg: '#f3e8ff', tx: '#7e22ce' },
+      'picu-24': { bg: '#ffe4e6', tx: '#e11d48' },
+      'opd': { bg: '#e0f2fe', tx: '#0284c7' },
+      'er-day': { bg: '#ffedd5', tx: '#c2410c' },
+      'off': { bg: '#dcfce7', tx: '#15803d' },
+      'post-off': { bg: '#f1f5f9', tx: '#475569' }
+    };
+
+    const ROSTER_TEMPLATE = `You are converting a hospital duty roster image into JSON. Output ONLY valid JSON, no markdown, no extra text.
+
+Use exactly this shape:
+{
+  "month": "<Month Name> <Year e.g. 2083>",
+  "startDate": "<YYYY-MM-DD of the first day of the roster>",
+  "days": [
+    {
+      "date": "MM-DD",
+      "day": "Sun | Mon | Tue | Wed | Thu | Fri | Sat",
+      "type": "picu-day | picu-24 | opd | er-day | off | post-off",
+      "title": "PICU Day | 24hr PICU | OPD | Day ER | Saturday OFF | Post 24h OFF | <Festival Name>",
+      "ward": "Person name or empty string",
+      "nicu": "Person name or empty string",
+      "picu": "Person name or empty string",
+      "er": "Person name or empty string",
+      "second": "Person name or empty string",
+      "opd": "Comma-separated names or empty string"
+    }
+  ]
+}
+
+RULES
+- date uses the month number and day number you see in the image, e.g. "06-01".
+- day must match the real weekday of that calendar date.
+- For Saturday / public holidays use type "off". For a day after a 24h shift use type "post-off".
+- If a festival or occasion is written instead of a shift label (e.g. Ghatasthapana, Dashain), keep it as the title.
+- Empty cells become "". OPD names are a comma + space separated list.
+- Keep every name spelled exactly as it appears in the image. Do not invent or correct names.
+- Include EVERY day of the month in order, starting at day 01.
+
+EXAMPLE — follow this exact shape (replace the values):
+{
+  "month": "Ashwin 2083",
+  "startDate": "2026-09-17",
+  "days": [
+    {
+      "date": "06-01",
+      "day": "Thu",
+      "type": "picu-day",
+      "title": "PICU Day",
+      "ward": "Nischal",
+      "nicu": "Krishna",
+      "picu": "Aayoush",
+      "er": "Salina",
+      "second": "Prerana",
+      "opd": "Saurav Singh, Prerana, Sinda, Pritha, Devaki"
+    }
+  ]
+}`;
+
+    function loadRosterMeta() {
+      try {
+        const raw = JSON.parse(localStorage.getItem(ROSTER_KEY));
+        if (raw && raw.meta && raw.meta.month && raw.meta.startDate) return raw.meta;
+      } catch (e) {}
+      return DEFAULT_META;
+    }
+
+    function loadRosterDays() {
+      try {
+        const raw = JSON.parse(localStorage.getItem(ROSTER_KEY));
+        if (raw && Array.isArray(raw.days) && raw.days.length > 0 && raw.days.every(d => d && d.date && d.type)) return raw.days;
+      } catch (e) {}
+      return DEFAULT_ROSTER;
+    }
+
+    let rosterMeta = loadRosterMeta();
+    let roster = loadRosterDays();
+
+    const notesDB = JSON.parse(localStorage.getItem('mrinalDutyNotes')) || {};
+    let realTodayIndex = 0;
+    let currentIndex = 0;
+    let activeNoteDate = null;
+
+    function triggerHaptic(ms = 30) {
+      if (navigator.vibrate) navigator.vibrate(ms);
+    }
+
+    /* ---- THEME ---- */
+    function initTheme() {
+      const saved = localStorage.getItem(THEME_KEY);
+      const dark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+      updateThemeIcon();
+    }
+
+    function toggleTheme() {
+      triggerHaptic(20);
+      const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+      document.documentElement.setAttribute('data-theme', dark ? 'light' : 'dark');
+      localStorage.setItem(THEME_KEY, dark ? 'light' : 'dark');
+      updateThemeIcon();
+    }
+
+    function updateThemeIcon() {
+      const btn = document.getElementById('theme-toggle');
+      if (!btn) return;
+      btn.innerText = document.documentElement.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
+    }
+
+    /* ---- DATA HELPERS ---- */
+    function getRosterStart() {
+      return new Date(rosterMeta.startDate + 'T00:00:00');
+    }
+
+    function getRosterEnd() {
+      const s = getRosterStart();
+      return new Date(s.getTime() + (roster.length - 1) * 86400000);
+    }
+
+    function isRosterExpired() {
+      return new Date() > getRosterEnd();
+    }
+
+    function isFestivalDay(day) {
+      return day && day.title && !STANDARD_TITLES.includes(day.title);
+    }
+
+    function recomputeToday() {
+      const diffTime = new Date() - getRosterStart();
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      realTodayIndex = Math.max(Math.min(diffDays, roster.length - 1), 0);
+    }
+
+    function initData() {
+      recomputeToday();
+      const hour = new Date().getHours();
+      let greeting = 'Good Evening,';
+      if (hour < 12) greeting = 'Good Morning,';
+      else if (hour < 17) greeting = 'Good Afternoon,';
+      document.getElementById('greetingText').innerText = greeting;
+    }
+
+    function generateCard(data) {
+      if (!data) return '';
+      
+      let detailsHtml = '';
+      if (data.type === 'opd') {
+        const opdTeammates = data.opd
+          ? data.opd.split(', ')
+              .map(m => m.trim())
+              .filter(m => m.toLowerCase() !== 'mrinal')
+          : [];
+        
+        const pills = opdTeammates.length > 0 
+          ? opdTeammates.map(m => `<span class="pill">${m}</span>`).join('') 
+          : '<span class="pill">None</span>';
+
+        detailsHtml = `
+          <div>
+            <div class="team-label">OPD Teammates</div>
+            <div class="pills">${pills}</div>
+          </div>
+        `;
+      } else if (data.type === 'off' || data.type === 'post-off') {
+        const statusText = data.type === 'off' ? 'Public Holiday / Off' : 'Post 24h Duty OFF';
+        const bgCol = data.type === 'off' ? '#dcfce7' : '#f1f5f9';
+        const txtCol = data.type === 'off' ? '#15803d' : '#475569';
+        detailsHtml = `
+          <div>
+            <div class="team-label">Duty Status</div>
+            <div class="pills"><span class="pill" style="background:${bgCol}; color:${txtCol}; width:100%; text-align:center;">${statusText}</span></div>
+          </div>
+        `;
+      } else {
+        let rows = [];
+        if (data.ward) rows.push(`<div class="duty-row"><span class="duty-k">Ward / ER</span><span class="duty-v">${data.ward}</span></div>`);
+        if (data.nicu) rows.push(`<div class="duty-row"><span class="duty-k">NICU</span><span class="duty-v">${data.nicu}</span></div>`);
+        if (data.picu) rows.push(`<div class="duty-row"><span class="duty-k">PICU</span><span class="duty-v">${data.picu}</span></div>`);
+        if (data.er) rows.push(`<div class="duty-row"><span class="duty-k">Day ER</span><span class="duty-v">${data.er}</span></div>`);
+        
+        detailsHtml = `
+          <div>
+            <div class="team-label">Duty Assignments & Team</div>
+            <div class="duty-list">${rows.join('')}</div>
+          </div>
+        `;
+      }
+
+      const secondCallHtml = data.second 
+        ? `<div class="second-call"><span class="second-call-label">📞 2nd On Call</span><span class="second-call-name">${data.second}</span></div>` 
+        : '';
+      
+      const savedNote = notesDB[data.date];
+      const noteHtml = savedNote 
+        ? `<div class="daily-note"><span style="font-size:10px; text-transform:uppercase; font-family:'Inter',sans-serif; display:block; margin-bottom:1px; opacity:0.8;">Note Attached</span>${savedNote}</div>` 
+        : '';
+      
+      const noteBadgeHtml = savedNote
+        ? `<div class="card-note-badge">Note Attached</div>`
+        : '';
+
+      const expiredHtml = isRosterExpired()
+        ? `<div class="expired-card" onclick="openRosterModal()">
+            <div class="expired-title">✨ Next month's roster not loaded yet</div>
+            <div class="expired-sub">${rosterMeta.month} ends soon. Generate the next roster.</div>
+            <div class="expired-cta">Generate Roster</div>
+          </div>`
+        : '';
+
+      let upcomingItems = [];
+      for (let i = 1; i <= 3; i++) {
+        const upIdx = currentIndex + i;
+        if (upIdx < roster.length) {
+          const upData = roster[upIdx];
+          upcomingItems.push(`
+            <div class="upcoming-card type-${upData.type}" onclick="jumpToDate(${upIdx})">
+              <div class="upcoming-date-info">
+                <span class="upcoming-day">${rosterMeta.month.split(' ')[0]} ${upData.date.split('-')[1]}</span>
+                <span class="upcoming-weekday">• ${upData.day}</span>
+              </div>
+              <div class="upcoming-badge type-${upData.type}">${upData.title}</div>
+            </div>
+          `);
+        }
+      }
+
+      const upcomingHtml = upcomingItems.length > 0 ? `
+        <div class="upcoming-container">
+          <div class="upcoming-header">Upcoming Days</div>
+          ${upcomingItems.join('')}
+        </div>
+      ` : '';
+
+      return `
+        ${expiredHtml}
+        <div class="card today type-${data.type}" id="dailyCardElement" data-date="${data.date}">
+          <div class="card-header">
+            <div>
+              <span class="card-label">Selected Roster Day</span>
+              <span class="date-num">${rosterMeta.month.split(' ')[0]} ${data.date.split('-')[1]}</span>
+              <span class="day-name">${data.day}</span>
+              ${noteBadgeHtml}
+            </div>
+            <div class="badge type-${data.type}">${data.title}</div>
+          </div>
+          
+          <div class="card-body-content">
+            ${detailsHtml}
+            ${secondCallHtml}
+          </div>
+
+          ${noteHtml}
+        </div>
+        ${upcomingHtml}
+      `;
+    }
+
+    function renderDailyView(direction) {
+      const renderArea = document.getElementById('daily-render-area');
+      renderArea.classList.add('fade-out');
+      if (direction === 'left') renderArea.classList.add('slide-left');
+      else if (direction === 'right') renderArea.classList.add('slide-right');
+      
+      setTimeout(() => {
+        const mainData = roster[currentIndex];
+        renderArea.innerHTML = generateCard(mainData);
+        requestAnimationFrame(() => {
+          renderArea.classList.remove('fade-out', 'slide-left', 'slide-right');
+        });
+        markPillOverflow();
+        updateTodayPill();
+      }, 120);
+    }
+
+    function renderMonthView() {
+      const grid = document.getElementById('calendar-grid');
+      const monthTitle = document.getElementById('cal-month-title');
+      if (monthTitle) monthTitle.innerText = rosterMeta.month;
+      let html = '';
+      
+      for(let i=0; i<4; i++) { html += `<div class="cal-cell empty"></div>`; }
+      
+      roster.forEach((day, index) => {
+        const hasNote = !!notesDB[day.date];
+        const hasNoteClass = hasNote ? 'has-note' : '';
+        const isTodayClass = index === realTodayIndex ? 'is-today' : '';
+        const isFestClass = isFestivalDay(day) ? 'is-festival' : '';
+        
+        const asteriskHtml = hasNote ? `<span class="note-asterisk">*</span>` : '';
+        const festHtml = isFestivalDay(day) ? `<span class="fest-mark">✦</span>` : '';
+        
+        html += `
+          <div class="cal-cell type-${day.type} ${hasNoteClass} ${isTodayClass} ${isFestClass}" 
+               data-index="${index}" data-date="${day.date}"
+               style="animation-delay: ${(index + 4) * 18}ms;">
+            <span class="cal-date">${day.date.split('-')[1]}${asteriskHtml}${festHtml}</span>
+          </div>
+        `;
+      });
+      grid.innerHTML = html;
+      attachCalendarInteractions();
+    }
+
+    function attachCalendarInteractions() {
+      document.querySelectorAll('.cal-cell:not(.empty)').forEach(cell => {
+        let pressTimer = null;
+        let isLongPress = false;
+        let startX = 0;
+        let startY = 0;
+
+        const startPress = (e) => {
+          isLongPress = false;
+          if (e.type === 'contextmenu') e.preventDefault();
+          cell.classList.add('pressed');
+          const touch = e.touches ? e.touches[0] : e;
+          startX = touch.clientX;
+          startY = touch.clientY;
+
+          pressTimer = setTimeout(() => {
+            isLongPress = true;
+            triggerHaptic(50);
+            openNoteModal(cell.dataset.date);
+          }, 400);
+        };
+
+        const movePress = (e) => {
+          if (!pressTimer) return;
+          const touch = e.touches ? e.touches[0] : e;
+          if (Math.abs(touch.clientX - startX) > 10 || Math.abs(touch.clientY - startY) > 10) {
+            clearTimeout(pressTimer);
+            pressTimer = null;
+            cell.classList.remove('pressed');
+          }
+        };
+
+        const endPress = () => {
+          cell.classList.remove('pressed');
+          if (pressTimer) {
+            clearTimeout(pressTimer);
+            pressTimer = null;
+          }
+          if (!isLongPress) {
+            triggerHaptic(20);
+            jumpToDate(cell.dataset.index);
+          }
+        };
+
+        cell.addEventListener('touchstart', startPress, { passive: true });
+        cell.addEventListener('touchmove', movePress, { passive: true });
+        cell.addEventListener('touchend', endPress);
+        cell.addEventListener('mousedown', startPress);
+        cell.addEventListener('mousemove', movePress);
+        cell.addEventListener('mouseup', endPress);
+        cell.addEventListener('contextmenu', e => e.preventDefault());
+      });
+    }
+
+    /* ---- NOTES ---- */
+    function openNoteModal(dateKey) {
+      activeNoteDate = dateKey;
+      document.getElementById('modal-title').innerText = `${rosterMeta.month.split(' ')[0]} ${dateKey.split('-')[1]} Note`;
+      document.getElementById('modal-input').value = notesDB[dateKey] || '';
+      document.getElementById('note-modal').classList.add('show');
+      setTimeout(() => document.getElementById('modal-input').focus(), 300);
+    }
+
+    function closeNoteModal() {
+      triggerHaptic(20);
+      document.getElementById('note-modal').classList.remove('show');
+      activeNoteDate = null;
+    }
+
+    function saveNote() {
+      triggerHaptic(40);
+      const val = document.getElementById('modal-input').value.trim();
+      if (val === '') { delete notesDB[activeNoteDate]; } 
+      else { notesDB[activeNoteDate] = val; }
+      
+      localStorage.setItem('mrinalDutyNotes', JSON.stringify(notesDB));
+      closeNoteModal();
+      renderMonthView();
+      renderDailyView();
+    }
+
+    function changeDay(step) {
+      const newIndex = currentIndex + step;
+      if (newIndex >= 0 && newIndex < roster.length) {
+        currentIndex = newIndex;
+        triggerHaptic(30);
+        
+        if (!document.getElementById('view-daily').classList.contains('active')) {
+          switchTab('daily');
+        } else {
+          renderDailyView(step > 0 ? 'right' : 'left');
+        }
+      } else {
+        triggerHaptic([12, 40, 12]);
+      }
+    }
+    
+    function goToday() {
+      triggerHaptic(35);
+      if(currentIndex !== realTodayIndex) {
+        currentIndex = realTodayIndex;
+        renderDailyView();
+      }
+    }
+    
+    function jumpToDate(index) {
+      currentIndex = parseInt(index);
+      switchTab('daily');
+    }
+
+    function updateTodayPill() {
+      const pill = document.getElementById('today-pill');
+      if (!pill) return;
+      const dailyActive = document.getElementById('view-daily').classList.contains('active');
+      const show = dailyActive && currentIndex !== realTodayIndex;
+      if (pill.classList.contains('visible') !== show) {
+        pill.classList.toggle('visible', show);
+      }
+    }
+    
+    function switchTab(tabId) {
+      triggerHaptic(30);
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+      
+      document.getElementById(`view-${tabId}`).classList.add('active');
+      document.getElementById(`nav-${tabId}`).classList.add('active');
+      
+      if(tabId === 'daily') {
+        renderDailyView();
+        updateTodayPill();
+      }
+      if(tabId === 'myduty') {
+        document.getElementById('today-pill').classList.remove('visible');
+        renderMyDutyView();
+      }
+      if(tabId === 'month') {
+        document.getElementById('today-pill').classList.remove('visible');
+        if (document.querySelector('.cal-cell.is-today')) {
+          setTimeout(() => {
+            const todayCell = document.querySelector('.cal-cell.is-today');
+            if (todayCell) todayCell.scrollIntoView({ block: 'center', behavior: 'smooth' });
+          }, 120);
+        }
+      }
+    }
+
+    /* ---- MY DUTY ---- */
+    function findMrinalDays() {
+      const hits = [];
+      roster.forEach((day, idx) => {
+        const roles = [];
+        const has = (s) => s && s.trim().toLowerCase().includes('mrinal');
+        if (has(day.picu)) roles.push(day.title === '24hr PICU' ? '24h PICU' : 'PICU Duty');
+        if (has(day.er)) roles.push('Day ER');
+        if (day.opd && day.opd.split(',').some(n => has(n))) roles.push('OPD');
+        if (roles.length) hits.push({ idx, day, roles });
+      });
+      return hits;
+    }
+
+    function renderMyDutyView() {
+      const area = document.getElementById('myduty-render-area');
+      if (!area) return;
+      const hits = findMrinalDays();
+      if (!hits.length) {
+        area.innerHTML = `<div class="myduty-empty">No duties found for Mrinal in ${rosterMeta.month}.</div>`;
+        return;
+      }
+      const monthName = rosterMeta.month.split(' ')[0];
+      let html = `<div class="myduty-summary">${hits.length} duty day${hits.length > 1 ? 's' : ''} in ${rosterMeta.month}</div>`;
+      hits.forEach(h => {
+        const rolePills = h.roles.map(r => `<span class="pill">🎯 ${r}</span>`).join('');
+        html += `
+          <div class="myduty-card type-${h.day.type}" onclick="jumpToDate(${h.idx})">
+            <div class="myduty-card-top">
+              <div>
+                <div class="myduty-day">${monthName} ${h.day.date.split('-')[1]}</div>
+                <div class="myduty-week">${h.day.day}</div>
+              </div>
+              <div class="badge type-${h.day.type}">${h.day.title}</div>
+            </div>
+            <div class="pills">${rolePills}</div>
+          </div>`;
+      });
+      area.innerHTML = html;
+    }
+
+    /* ---- SEARCH ---- */
+    function openSearchModal() {
+      triggerHaptic(20);
+      document.getElementById('search-modal').classList.add('show');
+      document.getElementById('search-input').value = '';
+      runSearch();
+      setTimeout(() => document.getElementById('search-input').focus(), 300);
+    }
+
+    function closeSearchModal() {
+      document.getElementById('search-modal').classList.remove('show');
+    }
+
+    function runSearch() {
+      const q = document.getElementById('search-input').value.trim().toLowerCase();
+      const box = document.getElementById('search-results');
+      if (!q) {
+        box.innerHTML = '<div class="search-hint">Search matches Ward, NICU, PICU, ER, 2nd on call and OPD names, or duty types.</div>';
+        return;
+      }
+      const tests = [
+        ['Ward', d => d.ward],
+        ['NICU', d => d.nicu],
+        ['PICU', d => d.picu],
+        ['Day ER', d => d.er],
+        ['2nd Call', d => d.second],
+        ['OPD', d => d.opd]
+      ];
+      const found = [];
+      roster.forEach((day, idx) => {
+        const roles = [];
+        tests.forEach(([label, fn]) => {
+          const v = fn(day);
+          if (v && v.split(',').some(n => n.trim().toLowerCase().includes(q))) roles.push(label);
+        });
+        if (day.title.toLowerCase().includes(q)) roles.unshift('Duty Type');
+        if (roles.length) found.push({ idx, day, roles });
+      });
+      if (!found.length) {
+        box.innerHTML = `<div class="search-hint">No matches for “${q}”.</div>`;
+        return;
+      }
+      const monthName = rosterMeta.month.split(' ')[0];
+      box.innerHTML = found.map(f => `
+        <div class="search-result type-${f.day.type}" onclick="jumpToSearch(${f.idx})">
+          <div>
+            <div class="search-result-date">${monthName} ${f.day.date.split('-')[1]} <span class="search-result-week">• ${f.day.day}</span></div>
+            <div class="search-result-roles">${f.roles.join(' · ')}</div>
+          </div>
+          <div class="upcoming-badge type-${f.day.type}">${f.day.title}</div>
+        </div>`).join('');
+    }
+
+    function jumpToSearch(idx) {
+      triggerHaptic(20);
+      closeSearchModal();
+      jumpToDate(idx);
+    }
+
+    /* ---- GENERATE ROSTER ---- */
+    function openRosterModal() {
+      triggerHaptic(20);
+      document.getElementById('roster-status').textContent = '';
+      document.getElementById('roster-status').className = 'roster-status';
+      document.getElementById('roster-input').value = '';
+      document.getElementById('roster-modal').classList.add('show');
+      setTimeout(() => document.getElementById('roster-input').focus(), 300);
+    }
+
+    function closeRosterModal() {
+      document.getElementById('roster-modal').classList.remove('show');
+    }
+
+    function setRosterStatus(msg, ok) {
+      const el = document.getElementById('roster-status');
+      el.textContent = msg;
+      el.className = 'roster-status ' + (ok ? 'ok' : 'error');
+    }
+
+    function copyRosterTemplate() {
+      const done = () => setRosterStatus('Template copied — paste it into your AI chat with the roster image.', true);
+      const fail = () => {
+        const ta = document.createElement('textarea');
+        ta.value = ROSTER_TEMPLATE;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); done(); } catch (e) { setRosterStatus('Copy failed — select the steps text manually.', false); }
+        document.body.removeChild(ta);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(ROSTER_TEMPLATE).then(done).catch(fail);
+      } else { fail(); }
+    }
+
+    function validateRosterData(data) {
+      if (!data || typeof data !== 'object') return 'Top level of the JSON must be an object.';
+      if (typeof data.month !== 'string' || !data.month.trim()) return 'Missing "month" (e.g. "Ashwin 2083").';
+      if (typeof data.startDate !== 'string' || isNaN(new Date(data.startDate).getTime())) return 'Missing or invalid "startDate" (use YYYY-MM-DD, e.g. "2026-09-17").';
+      if (!Array.isArray(data.days) || data.days.length < 28 || data.days.length > 31) {
+        return `"days" must be an array of 28–31 day objects (got ${data.days ? data.days.length : 'none'}).`;
+      }
+      const base = new Date(data.startDate + 'T00:00:00');
+      const seen = {};
+      for (let i = 0; i < data.days.length; i++) {
+        const d = data.days[i];
+        const label = `Day ${i + 1}`;
+        if (!d || typeof d !== 'object') return `${label}: not an object.`;
+        if (typeof d.date !== 'string' || !/^\d{2}-\d{2}$/.test(d.date)) return `${label}: "date" must be MM-DD (e.g. "06-01").`;
+        const dom = parseInt(d.date.split('-')[1], 10);
+        if (dom !== i + 1) return `${label}: wrong "date" — expected day-of-month "${('0' + (i + 1)).slice(-2)}", got "${dom}".`;
+        if (seen[d.date]) return `Duplicate date ${d.date}.`;
+        seen[d.date] = true;
+        const expectedWeekday = WEEKDAYS[(base.getDay() + i) % 7];
+        if (typeof d.day !== 'string' || !WEEKDAYS.includes(d.day)) return `${label}: invalid "day" "${d.day}".`;
+        if (d.day !== expectedWeekday) return `${label}: weekday mismatch — the calendar says ${expectedWeekday}, you wrote ${d.day}.`;
+        if (!VALID_TYPES.includes(d.type)) return `${label}: invalid "type" "${d.type}" (allowed: ${VALID_TYPES.join(', ')}).`;
+        if (typeof d.title !== 'string' || !d.title.trim()) return `${label}: missing "title".`;
+        ['ward', 'nicu', 'picu', 'er', 'second', 'opd'].forEach(k => {
+          if (d[k] !== undefined && typeof d[k] !== 'string') return;
+        });
+      }
+      return null;
+    }
+
+    function validateAndSaveRoster() {
+      triggerHaptic(30);
+      const raw = document.getElementById('roster-input').value.trim();
+      if (!raw) { setRosterStatus('Paste the JSON from your AI chat first.', false); return; }
+      let data;
+      try { data = JSON.parse(raw); } 
+      catch (e) { setRosterStatus('Invalid JSON — check for missing commas, quotes or brackets.', false); return; }
+      const err = validateRosterData(data);
+      if (err) { setRosterStatus(err, false); return; }
+      localStorage.setItem(ROSTER_KEY, JSON.stringify({ meta: { month: data.month.trim(), startDate: data.startDate }, days: data.days }));
+      rosterMeta = { month: data.month.trim(), startDate: data.startDate };
+      roster = data.days;
+      recomputeToday();
+      currentIndex = Math.min(currentIndex, roster.length - 1);
+      closeRosterModal();
+      renderMonthView();
+      renderDailyView();
+      renderMyDutyView();
+      setRosterStatus('', true);
+    }
+
+    function resetRoster() {
+      triggerHaptic(30);
+      localStorage.removeItem(ROSTER_KEY);
+      rosterMeta = DEFAULT_META;
+      roster = DEFAULT_ROSTER;
+      recomputeToday();
+      currentIndex = Math.min(currentIndex, roster.length - 1);
+      closeRosterModal();
+      renderMonthView();
+      renderDailyView();
+      renderMyDutyView();
+    }
+
+    /* ---- PRINT ---- */
+    function printRoster() {
+      triggerHaptic(40);
+      const el = document.getElementById('print-area');
+      const total = roster.length;
+      const firstEnd = Math.min(15, total);
+      const chunks = [[0, firstEnd - 1], [firstEnd, total - 1]].filter(([a, b]) => a <= b);
+      const monthName = rosterMeta.month;
+      el.innerHTML = chunks.map(([from, to], ci) => {
+        const rows = [];
+        for (let i = from; i <= to; i++) {
+          const d = roster[i];
+          const weekend = d.day === 'Sat';
+          const fest = isFestivalDay(d);
+          const c = TYPE_COLORS[d.type] || TYPE_COLORS.opd;
+          rows.push(`
+            <tr class="${weekend ? 'weekend' : ''} ${fest ? 'festival' : ''}">
+              <td class="pc-day">${d.date.split('-')[1]}</td>
+              <td class="pc-week">${d.day}</td>
+              <td class="pc-type" style="background:${c.bg}; color:${c.tx};">${d.title}</td>
+              <td>${d.ward || '—'}</td>
+              <td>${d.nicu || '—'}</td>
+              <td>${d.picu || '—'}</td>
+              <td>${d.er || '—'}</td>
+              <td>${d.second || '—'}</td>
+              <td>${d.opd || '—'}</td>
+            </tr>`);
+        }
+        return `
+          <div class="print-page">
+            <div class="print-header">
+              <div class="print-title">${monthName} — Duty Roster</div>
+              <div class="print-pageno">Page ${ci + 1} of ${chunks.length} · Days ${from + 1}–${to + 1}</div>
+            </div>
+            <table class="print-table">
+              <thead>
+                <tr><th>Day</th><th>Week</th><th>Type</th><th>Ward</th><th>NICU</th><th>PICU</th><th>ER</th><th>2nd Call</th><th>OPD</th></tr>
+              </thead>
+              <tbody>${rows.join('')}</tbody>
+            </table>
+            <div class="print-footer">Dr. Mrinal Duty App · Weekends shaded · Festivals highlighted gold</div>
+          </div>`;
+      }).join('');
+      setTimeout(() => window.print(), 60);
+    }
+
+    function initSwipeGestures() {
+      const view = document.getElementById('view-daily');
+      const area = document.getElementById('daily-render-area');
+      let startX = 0, startY = 0, axisLocked = null, tracking = false;
+      const swipeThreshold = 70;
+
+      view.addEventListener('touchstart', (e) => {
+        const t = e.touches[0];
+        startX = t.clientX; startY = t.clientY;
+        tracking = true; axisLocked = null;
+        area.style.transition = 'none';
+      }, { passive: true });
+
+      view.addEventListener('touchmove', (e) => {
+        if (!tracking) return;
+        const t = e.touches[0];
+        const dx = t.clientX - startX;
+        const dy = t.clientY - startY;
+        if (!axisLocked) {
+          if (Math.abs(dx) > 10 || Math.abs(dy) > 10)
+            axisLocked = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+        }
+        if (axisLocked === 'x') {
+          area.style.transform = `translateX(${dx * 0.45}px) scale(${1 - Math.min(Math.abs(dx)/1200, 0.04)})`;
+          area.style.opacity = `${1 - Math.min(Math.abs(dx)/500, 0.35)}`;
+        }
+      }, { passive: true });
+
+      const endSwipe = (e) => {
+        if (!tracking) return;
+        tracking = false;
+        const t = e.changedTouches[0];
+        const dx = t.clientX - startX;
+        const dy = t.clientY - startY;
+
+        if (axisLocked === 'x' && Math.abs(dx) >= swipeThreshold && Math.abs(dx) > Math.abs(dy)) {
+          const step = dx < 0 ? 1 : -1;
+          const nextIndex = currentIndex + step;
+          area.style.transform = '';
+          area.style.transition = '';
+          area.style.opacity = '';
+          if (nextIndex >= 0 && nextIndex < roster.length) {
+            changeDay(step);
+          } else {
+            area.style.transition = 'transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease';
+            area.style.transform = 'translateX(0) scale(1)';
+            area.style.opacity = '1';
+          }
+        } else {
+          area.style.transition = 'transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease';
+          area.style.transform = 'translateX(0) scale(1)';
+          area.style.opacity = '1';
+        }
+      };
+      
+      view.addEventListener('touchend', endSwipe, { passive: true });
+      view.addEventListener('touchcancel', endSwipe, { passive: true });
+    }
+
+    function initCardLongPress() {
+      const area = document.getElementById('daily-render-area');
+      let timer = null, sx = 0, sy = 0;
+
+      const start = (e) => {
+        const t = e.touches ? e.touches[0] : e;
+        sx = t.clientX; sy = t.clientY;
+        if (timer) clearTimeout(timer);
+        timer = setTimeout(() => { timer = null; triggerHaptic(50); openNoteModal(roster[currentIndex].date); }, 400);
+      };
+      const move = (e) => {
+        if (!timer) return;
+        const t = e.touches ? e.touches[0] : e;
+        if (Math.abs(t.clientX - sx) > 12 || Math.abs(t.clientY - sy) > 12) { clearTimeout(timer); timer = null; }
+      };
+      const end = () => { if (timer) { clearTimeout(timer); timer = null; } };
+      area.addEventListener('touchstart', start, { passive: true });
+      area.addEventListener('touchmove', move, { passive: true });
+      area.addEventListener('touchend', end, { passive: true });
+      area.addEventListener('touchcancel', end, { passive: true });
+      area.addEventListener('mousedown', start);
+      area.addEventListener('mousemove', move);
+      area.addEventListener('mouseup', end);
+    }
+
+    function markPillOverflow() {
+      document.querySelectorAll('#daily-render-area .pills').forEach(pills => {
+        pills.classList.toggle('has-overflow', pills.scrollHeight > pills.clientHeight);
+      });
+    }
+
+    function closeAllModals() {
+      closeNoteModal();
+      closeSearchModal();
+      closeRosterModal();
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') { closeAllModals(); return; }
+      const anyModal = document.querySelector('.modal-overlay.show');
+      if (anyModal) return;
+      if (e.key === 'ArrowLeft') changeDay(-1);
+      else if (e.key === 'ArrowRight') changeDay(1);
+    });
+
+    initTheme();
+    initData();
+    currentIndex = realTodayIndex;
+    renderDailyView();
+    renderMonthView();
+    renderMyDutyView();
+    initSwipeGestures();
+    initCardLongPress();
+    updateTodayPill();
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    }
+  </script>
+</body>
+</html>
