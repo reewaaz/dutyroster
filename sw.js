@@ -1,4 +1,4 @@
-const CACHE_NAME = 'duty-app-v2';
+const CACHE_NAME = 'duty-app-v3';
 const ASSETS = [
   './',
   './index.html',
@@ -51,5 +51,22 @@ self.addEventListener('fetch', (event) => {
         return response;
       });
     })
+  );
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  event.waitUntil(
+    (async () => {
+      const url = event.notification.data && event.notification.data.url ? event.notification.data.url : './index.html';
+      const windowClients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+      for (const client of windowClients) {
+        if ('focus' in client) {
+          client.navigate(url);
+          return client.focus();
+        }
+      }
+      return self.clients.openWindow(url);
+    })()
   );
 });

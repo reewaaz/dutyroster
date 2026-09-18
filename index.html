@@ -43,12 +43,12 @@
       --nav-bg: rgba(15, 26, 46, 0.92);
       --accent: #38bdf8;
 
-      --picu-day-bg: #2c2040; --picu-day-txt: #dcc4ff;
-      --picu-24-bg: #3a222b; --picu-24-txt: #ffc1cd;
-      --opd-bg: #12364f; --opd-txt: #9adcff;
-      --er-day-bg: #382714; --er-day-txt: #ffd0a3;
-      --off-bg: #123724; --off-txt: #a7f3cf;
-      --post-off-bg: #1d2a3c; --post-off-txt: #c2cddc;
+      --picu-day-bg: #432d70; --picu-day-txt: #e6ccff;
+      --picu-24-bg: #5c2436; --picu-24-txt: #ffc2d0;
+      --opd-bg: #135187; --opd-txt: #a5e4ff;
+      --er-day-bg: #5a390f; --er-day-txt: #ffd9a8;
+      --off-bg: #155238; --off-txt: #b6f5d5;
+      --post-off-bg: #283a5c; --post-off-txt: #d6e1f0;
       color-scheme: dark;
     }
 
@@ -108,6 +108,19 @@
     /* DAILY VIEW STYLES */
     #view-daily { display: none; flex-direction: column; touch-action: pan-y; }
     #view-daily.active { display: flex; }
+
+    .layout-switch { display: flex; background: #eef2f7; border-radius: 14px; padding: 3px; gap: 3px; margin-bottom: 12px; flex-shrink: 0; }
+    :root[data-theme="dark"] .layout-switch { background: #182235; }
+    .layout-seg { flex: 1; padding: 8px 0; border: none; border-radius: 11px; font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 900; color: var(--text-muted); background: transparent; cursor: pointer; transition: background 0.2s, color 0.2s; -webkit-tap-highlight-color: transparent; }
+    .layout-seg:active { transform: scale(0.97); }
+    .layout-seg.active { background: var(--accent); color: #fff; box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35); }
+
+    #daily-render-area.stack { gap: 12px; scroll-snap-type: y proximity; scroll-behavior: smooth; padding-bottom: 8px; }
+    #daily-render-area.stack .card.today, #daily-render-area.stack .upcoming-card { scroll-snap-align: center; flex-shrink: 0; }
+    #daily-render-area.stack .card.today { animation: popIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) backwards; }
+    .upcoming-card.scroll-past { opacity: 0.72; }
+    .upcoming-card.scroll-tap { transform: scale(1.06); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18); }
+    .scroll-note { font-size: 11px; font-weight: 900; color: #d97706; margin-left: 2px; }
 
     /* Today Pill */
     .today-pill { position: absolute; bottom: calc(88px + env(safe-area-inset-bottom)); right: 16px; z-index: 30; background: var(--accent); color: #fff; border: none; padding: 12px 20px; border-radius: 999px; font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 14px; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 16px rgba(2, 132, 199, 0.4); cursor: pointer; opacity: 0; transform: translateY(-6px) scale(0.9); pointer-events: none; transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); -webkit-tap-highlight-color: transparent; }
@@ -424,6 +437,15 @@
     .alert-type-label input { display: none; }
     .alert-type-label.checked { opacity: 1; border-color: var(--accent); }
     .alert-actions .btn-cancel { font-size: 13px; }
+    .reminder-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .reminder-days, .reminder-time { padding: 8px 8px; border-radius: 11px; font-size: 12.5px; font-weight: 800; font-family: 'Nunito', sans-serif; border: 2px solid #e2e8f0; background: #f8fafc; color: var(--text-main); outline: none; }
+    :root[data-theme="dark"] .reminder-days, :root[data-theme="dark"] .reminder-time { background: #0b1220; border-color: #29374f; }
+    .reminder-days { flex: 1.6; min-width: 0; }
+    .reminder-time { flex: 1; }
+    .reminder-remove { flex-shrink: 0; width: 30px; height: 30px; border: none; border-radius: 10px; background: #fee2e2; color: #b91c1c; font-size: 14px; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: 'Nunito', sans-serif; }
+    :root[data-theme="dark"] .reminder-remove { background: #4c1d2d; color: #fca5a5; }
+    .add-reminder { width: 100%; padding: 10px; margin-top: 2px; border: 2px dashed #cbd5e1; border-radius: 12px; background: transparent; color: var(--accent); font-size: 13px; font-weight: 900; font-family: 'Nunito', sans-serif; cursor: pointer; }
+    :root[data-theme="dark"] .add-reminder { border-color: #334155; }
     /* Toggle switch */
     .switch { position: relative; width: 52px; height: 30px; flex-shrink: 0; }
     .switch input { opacity: 0; width: 0; height: 0; }
@@ -569,6 +591,10 @@
       
       <!-- DAILY VIEW -->
       <div id="view-daily" class="tab-content active">
+        <div class="layout-switch" id="layout-switch">
+          <button class="layout-seg active" data-mode="swipe" onclick="setNavMode('swipe')">◂▸ Swipe</button>
+          <button class="layout-seg" data-mode="stack" onclick="setNavMode('stack')">☰ All Days</button>
+        </div>
         <div id="daily-render-area"></div>
       </div>
 
@@ -645,12 +671,11 @@
           <label class="switch"><input type="checkbox" id="alert-enabled"><span class="slider"></span></label>
         </div>
 
-        <div class="setting-row">
-          <div>
-            <div class="setting-label">Alert Time</div>
-            <div class="setting-sub">Deliver the notification at</div>
-          </div>
-          <select class="alert-select" id="alert-hour"></select>
+        <div class="setting-block">
+          <div class="setting-label">Reminder Schedule</div>
+          <div class="setting-sub" style="margin-bottom: 8px;">When to ping before each duty day</div>
+          <div id="reminder-rows"></div>
+          <button class="add-reminder" onclick="addReminderRow()">＋ Add reminder</button>
         </div>
 
         <div class="setting-block">
@@ -844,7 +869,8 @@ EXAMPLE — follow this exact shape (replace the values):
     /* ---- DUTY ALERTS ---- */
     const ALERT_KEY = 'mrinalDutyAlerts';
     const ALERT_SETTINGS_KEY = 'mrinalDutyAlertSettings';
-    const DEFAULT_ALERT_SETTINGS = { hour: 8, types: ['picu-day', 'picu-24', 'opd', 'er-day'] };
+    const DEFAULT_REMINDERS = [{ daysBefore: 0, time: 8 }, { daysBefore: 1, time: 20 }];
+    const DEFAULT_ALERT_SETTINGS = { hour: 8, reminders: DEFAULT_REMINDERS, types: ['picu-day', 'picu-24', 'opd', 'er-day'] };
     const ALERT_TYPES = [
       { type: 'picu-day', label: 'PICU Day' },
       { type: 'picu-24', label: 'PICU 24h' },
@@ -856,7 +882,14 @@ EXAMPLE — follow this exact shape (replace the values):
     function alertSettings() {
       try {
         const s = JSON.parse(localStorage.getItem(ALERT_SETTINGS_KEY) || 'null');
-        if (s && typeof s.hour === 'number' && Array.isArray(s.types) && s.types.length) return s;
+        if (!s || !Array.isArray(s.types) || !s.types.length) return Object.assign({}, DEFAULT_ALERT_SETTINGS);
+        let reminders = s.reminders;
+        if (!Array.isArray(reminders) || !reminders.length) {
+          reminders = [{ daysBefore: 0, time: (isFinite(s.hour) && (s.hour | 0) === s.hour) ? s.hour : 8 },
+                       { daysBefore: 1, time: 20 }];
+        }
+        return { hour: reminders.find(r => r.daysBefore === 0) ? reminders.find(r => r.daysBefore === 0).time : (isFinite(s.hour) ? s.hour : 8),
+                 reminders: reminders.filter(r => (r.daysBefore | 0) === r.daysBefore && isFinite(r.time)), types: s.types };
       } catch (e) {}
       return Object.assign({}, DEFAULT_ALERT_SETTINGS);
     }
@@ -870,8 +903,9 @@ EXAMPLE — follow this exact shape (replace the values):
     }
 
     function dutyAlertHour() {
-      const h = alertSettings().hour;
-      return (isFinite(h) && (h | 0) === h && h >= 0 && h <= 23) ? h : 8;
+      const s = alertSettings();
+      const same = s.reminders.find(r => r.daysBefore === 0);
+      return same ? same.time : 8;
     }
 
     function isDutyAlertDay(day) {
@@ -911,20 +945,10 @@ EXAMPLE — follow this exact shape (replace the values):
         list.querySelectorAll('.alert-type-label').forEach(l =>
           l.addEventListener('click', () => l.classList.toggle('checked', l.querySelector('input').checked)));
       }
-      const hourSel = document.getElementById('alert-hour');
-      if (!hourSel.children.length) {
-        for (let h = 6; h <= 12; h++) {
-          const opt = document.createElement('option');
-          opt.value = String(h);
-          opt.textContent = `${(h % 12) || 12}${h >= 12 ? ' PM' : ' AM'}`;
-          hourSel.appendChild(opt);
-        }
-      }
+      renderReminderRows(s.reminders);
       document.getElementById('alert-enabled').checked = localStorage.getItem(ALERT_KEY) === '1';
-      hourSel.value = String(dutyAlertHour());
-      const types = s.types;
       list.querySelectorAll('.alert-type').forEach(ch => {
-        ch.checked = types.includes(ch.value);
+        ch.checked = s.types.includes(ch.value);
         const label = ch.closest('.alert-type-label');
         if (label) label.classList.toggle('checked', ch.checked);
       });
@@ -934,16 +958,76 @@ EXAMPLE — follow this exact shape (replace the values):
       document.getElementById('alert-modal').classList.add('show');
     }
 
+    function reminderDaysLabel(daysBefore) {
+      if (daysBefore === 0) return 'Same day';
+      if (daysBefore === 1) return '1 day before';
+      if (daysBefore === 2) return '2 days before';
+      return `${daysBefore} days before`;
+    }
+
+    function buildTimeOptions(selectedHour) {
+      return Array.from({ length: 18 }, (_, i) => i + 6).map(h => {
+        const label = `${(h % 12) || 12}${h >= 12 ? ' PM' : ' AM'}`;
+        return `<option value="${h}" ${h === selectedHour ? 'selected' : ''}>${label}</option>`;
+      }).join('');
+    }
+
+    function renderReminderRows(reminders) {
+      const rows = document.getElementById('reminder-rows');
+      const list = (reminders && reminders.length ? reminders : DEFAULT_REMINDERS);
+      rows.innerHTML = list.map((r, idx) => `
+        <div class="reminder-row" data-ri="${idx}">
+          <select class="reminder-days">
+            ${[0, 1, 2, 3, 4, 5, 6].map(d => `<option value="${d}" ${d === r.daysBefore ? 'selected' : ''}>${reminderDaysLabel(d)}</option>`).join('')}
+          </select>
+          <select class="reminder-time">${buildTimeOptions(r.time)}</select>
+          <button class="reminder-remove" onclick="removeReminderRow(this)" aria-label="Remove reminder">✕</button>
+        </div>`).join('');
+    }
+
+    function addReminderRow() {
+      const rows = document.getElementById('reminder-rows');
+      const div = document.createElement('div');
+      div.className = 'reminder-row';
+      div.innerHTML = `
+        <select class="reminder-days">${[0, 1, 2, 3, 4, 5, 6].map(d => `<option value="${d}">${reminderDaysLabel(d)}</option>`).join('')}</select>
+        <select class="reminder-time">${buildTimeOptions(20)}</select>
+        <button class="reminder-remove" onclick="removeReminderRow(this)" aria-label="Remove reminder">✕</button>`;
+      rows.appendChild(div);
+    }
+
+    function removeReminderRow(btn) {
+      const row = btn.closest('.reminder-row');
+      const list = document.getElementById('reminder-rows');
+      if (list.children.length <= 1) { showToast('Keep at least one reminder'); return; }
+      row.remove();
+      triggerHaptic(20);
+    }
+
+    function collectReminders() {
+      const list = document.getElementById('reminder-rows');
+      const out = [];
+      list.querySelectorAll('.reminder-row').forEach(row => {
+        const daysBefore = parseInt(row.querySelector('.reminder-days').value, 10);
+        const time = parseInt(row.querySelector('.reminder-time').value, 10);
+        out.push({ daysBefore, time });
+      });
+      if (!out.length) out.push({ daysBefore: 0, time: 8 });
+      return out.sort((a, b) => a.daysBefore - b.daysBefore || a.time - b.time);
+    }
+
     function closeAlertModal() {
       document.getElementById('alert-modal').classList.remove('show');
     }
 
     function saveAlertSettings() {
       const enabled = document.getElementById('alert-enabled').checked;
-      const hour = parseInt(document.getElementById('alert-hour').value, 10) || 8;
+      const reminders = collectReminders();
       const types = Array.from(document.querySelectorAll('.alert-type:checked')).map(c => c.value);
       if (!types.length) { showToast('Pick at least one duty type'); return; }
-      localStorage.setItem(ALERT_SETTINGS_KEY, JSON.stringify({ hour, types }));
+      const same = reminders.find(r => r.daysBefore === 0);
+      const hour = same ? same.time : reminders[0].time;
+      localStorage.setItem(ALERT_SETTINGS_KEY, JSON.stringify({ hour, reminders, types }));
 
       if (!enabled) {
         localStorage.setItem(ALERT_KEY, '0');
@@ -965,20 +1049,26 @@ EXAMPLE — follow this exact shape (replace the values):
         localStorage.setItem(ALERT_KEY, '1');
         refreshAlertButton();
         scheduleDutyAlerts();
-        const h = dutyAlertHour();
-        showToast(`Alerts on — duty mornings at ${(h % 12) || 12}${h >= 12 ? ' PM' : ' AM'}`);
+        const when = reminders.map(r => `${reminderDaysLabel(r.daysBefore)} ${(r.time % 12) || 12}${r.time >= 12 ? ' PM' : ' AM'}`).join(' · ');
+        showToast(`Alerts on — ${when}`);
         closeAlertModal();
-        fireNotification(realTodayIndex, true);
+        dispatchNotification(realTodayIndex, { isTest: true });
       };
       if (Notification.permission === 'granted') commit();
       else Notification.requestPermission().then(p => { if (p === 'granted') commit(); else { refreshAlertButton(); closeAlertModal(); } });
     }
 
     function sendTestNotification() {
-      if (typeof Notification === 'undefined') { showToast('Notifications not supported here'); return; }
-      const go = () => { fireNotification(realTodayIndex, true); showToast('🔔 Test notification sent'); };
+      if (typeof Notification === 'undefined') { showToast('Notifications not supported here (iOS Safari needs Safari settings or Chrome)'); return; }
+      const go = () => {
+        const target = nextAlertTarget(realTodayIndex, new Date(new Date().getTime() - 60000));
+        const idx = target ? target.index : realTodayIndex;
+        dispatchNotification(idx, { isTest: true });
+        const d = roster[idx];
+        showToast(`🔔 Test: ${rosterMeta.month.split(' ')[0]} ${d.date.split('-')[1]} (${d.day}) ${d.title}`);
+      };
       if (Notification.permission === 'granted') { go(); return; }
-      if (Notification.permission === 'denied') { showToast('Notifications blocked in browser settings'); return; }
+      if (Notification.permission === 'denied') { showToast('Notifications blocked — enable in browser site settings'); return; }
       Notification.requestPermission().then(p => { if (p === 'granted') go(); else showToast('Permission not granted'); });
     }
 
@@ -987,25 +1077,33 @@ EXAMPLE — follow this exact shape (replace the values):
       return new Date(s.getTime() + index * 86400000);
     }
 
-    function nextDutyAlertTarget(fromIndex, fromTime) {
+    function nextAlertTarget(fromIndex, fromTime) {
+      const reminders = alertSettings().reminders;
+      let best = null;
       for (let i = fromIndex; i < roster.length; i++) {
         if (!isDutyAlertDay(roster[i])) continue;
-        const when = indexToDate(i);
-        when.setHours(dutyAlertHour(), 0, 0, 0);
-        if (when.getTime() > fromTime.getTime()) return { index: i, when };
+        for (const r of reminders) {
+          const dayIdx = i - r.daysBefore;
+          if (dayIdx < 0) continue;
+          const when = indexToDate(dayIdx);
+          when.setHours(r.time, 0, 0, 0);
+          if (when.getTime() > fromTime.getTime() && (!best || when.getTime() < best.when.getTime())) {
+            best = { index: i, dayIdx, daysBefore: r.daysBefore, when };
+          }
+        }
       }
-      return null;
+      return best;
     }
 
     function scheduleDutyAlerts() {
       clearTimeout(alertTimer); alertTimer = null;
       if (!dutyAlertEnabled()) return;
       const from = new Date();
-      const target = nextDutyAlertTarget(realTodayIndex, from);
+      const target = nextAlertTarget(realTodayIndex, from);
       if (!target) return;
       const wait = target.when.getTime() - from.getTime();
       alertTimer = setTimeout(() => {
-        showDutyAlert(target.index);
+        dispatchNotification(target.index, { daysBefore: target.daysBefore });
         scheduleDutyAlerts();
       }, Math.max(wait, 1000));
     }
@@ -1041,28 +1139,48 @@ EXAMPLE — follow this exact shape (replace the values):
       return `${title}\n${parts.slice(0, 6).join(' · ')}`;
     }
 
-    function fireNotification(index, isTest) {
-      if (typeof Notification === 'undefined') return;
-      if (index < 0 || index >= roster.length) return;
+    function buildReminderAlert(index, daysBefore) {
       const d = roster[index];
+      if (!d) return '';
       const month = rosterMeta.month.split(' ')[0];
       const dayNum = d.date.split('-')[1];
-      const title = `${isTest ? '🔔 Test: ' : ''}On duty — ${month} ${dayNum} (${d.day}) · ${d.title}`;
-      new Notification(title, {
-        body: buildDutyAlert(title, index),
+      const when = daysBefore === 0 ? `Today — ${month} ${dayNum} (${d.day})` : `${reminderDaysLabel(daysBefore)} — ${month} ${dayNum} (${d.day})`;
+      const head = `${d.title} duty`;
+      const body = `${buildDutyAlert(head, index)}`;
+      return { title: `${when} · ${d.title}`, body };
+    }
+
+    async function dispatchNotification(index, opts) {
+      const isTest = opts && opts.isTest;
+      const daysBefore = opts && opts.daysBefore != null ? opts.daysBefore : 0;
+      if (index < 0 || index >= roster.length) return;
+      const msg = buildReminderAlert(index, daysBefore);
+      const tag = `duty-${daysBefore === 0 ? 'd' : 'r'}-${roster[index].date}`;
+      const nOpts = {
+        body: `${isTest ? '🔔 Test · ' : ''}${msg.body}`,
         icon: './icons/icon-192.png',
         badge: './icons/icon-192.png',
-        tag: `duty-${d.date}`,
-        requireInteraction: false
-      }).addEventListener('click', () => {
-        window.focus();
-        jumpToDate(index);
-      });
+        tag,
+        requireInteraction: false,
+        data: { url: './index.html' }
+      };
+      try {
+        if (navigator.serviceWorker && navigator.serviceWorker.ready) {
+          const reg = await navigator.serviceWorker.ready;
+          await reg.showNotification(msg.title, nOpts);
+          return;
+        }
+      } catch (e) {}
+      try {
+        if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+          new Notification(msg.title, nOpts);
+        }
+      } catch (e) {}
     }
 
     function showDutyAlert(index) {
       if (!dutyAlertEnabled()) return;
-      fireNotification(index, false);
+      dispatchNotification(index, { isTest: false, daysBefore: 0 });
     }
 
     function initDutyAlerts() {
@@ -1152,7 +1270,7 @@ EXAMPLE — follow this exact shape (replace the values):
       return '9 AM – 5 PM';
     }
 
-    function generateCard(data) {
+    function mainCardHtml(data) {
       if (!data) return '';
       
       let detailsHtml = '';
@@ -1215,6 +1333,31 @@ EXAMPLE — follow this exact shape (replace the values):
         ? `<div class="card-note-badge">Note Attached</div>`
         : '';
 
+      return `
+        <div class="card today type-${data.type}" id="dailyCardElement" data-date="${data.date}">
+          <div class="card-header">
+            <div>
+              <span class="card-label">Selected Roster Day</span>
+              <span class="date-num">${rosterMeta.month.split(' ')[0]} ${data.date.split('-')[1]}</span>
+              <span class="day-name">${data.day}</span>
+              ${noteBadgeHtml}
+            </div>
+            <div class="badge type-${data.type}">${data.title}</div>
+          </div>
+          
+          <div class="card-body-content">
+            ${hoursHtml}
+            ${detailsHtml}
+            ${secondCallHtml}
+          </div>
+
+          ${noteHtml}
+        </div>
+      `;
+    }
+
+    function generateCard(data) {
+      if (!data) return '';
       const expiredHtml = isRosterExpired()
         ? `<div class="expired-card" onclick="openRosterModal()">
             <div class="expired-title">✨ Next month's roster not loaded yet</div>
@@ -1247,33 +1390,85 @@ EXAMPLE — follow this exact shape (replace the values):
         </div>
       ` : '';
 
-      return `
-        ${expiredHtml}
-        <div class="card today type-${data.type}" id="dailyCardElement" data-date="${data.date}">
-          <div class="card-header">
-            <div>
-              <span class="card-label">Selected Roster Day</span>
-              <span class="date-num">${rosterMeta.month.split(' ')[0]} ${data.date.split('-')[1]}</span>
-              <span class="day-name">${data.day}</span>
-              ${noteBadgeHtml}
-            </div>
-            <div class="badge type-${data.type}">${data.title}</div>
-          </div>
-          
-          <div class="card-body-content">
-            ${hoursHtml}
-            ${detailsHtml}
-            ${secondCallHtml}
-          </div>
+      return `${expiredHtml}${mainCardHtml(data)}${upcomingHtml}`;
+    }
 
-          ${noteHtml}
-        </div>
-        ${upcomingHtml}
-      `;
+    /* ---- NAVIGATION MODE (swipe / stack) ---- */
+    const NAV_MODE_KEY = 'mrinalNavMode';
+    let NAV_MODE = 'swipe';
+
+    function initNavMode() {
+      try { const m = localStorage.getItem(NAV_MODE_KEY); NAV_MODE = (m === 'stack' || m === 'swipe') ? m : 'swipe'; } catch (e) { NAV_MODE = 'swipe'; }
+      document.querySelectorAll('#layout-switch .layout-seg').forEach(b => b.classList.toggle('active', b.dataset.mode === NAV_MODE));
+      const area = document.getElementById('daily-render-area');
+      if (area) area.classList.toggle('stack', NAV_MODE === 'stack');
+    }
+
+    function setNavMode(mode) {
+      if (mode !== 'stack' && mode !== 'swipe') return;
+      triggerHaptic(20);
+      NAV_MODE = mode;
+      try { localStorage.setItem(NAV_MODE_KEY, mode); } catch (e) {}
+      document.querySelectorAll('#layout-switch .layout-seg').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+      const area = document.getElementById('daily-render-area');
+      if (area) area.classList.toggle('stack', mode === 'stack');
+      renderDailyView();
+    }
+
+    function renderScrollView() {
+      const area = document.getElementById('daily-render-area');
+      if (!area) return;
+      let html = '';
+      if (isRosterExpired()) {
+        html += `<div class="expired-card" onclick="openRosterModal()">
+            <div class="expired-title">✨ Next month's roster not loaded yet</div>
+            <div class="expired-sub">${rosterMeta.month} ends soon. Generate the next roster.</div>
+            <div class="expired-cta">Generate Roster</div>
+          </div>`;
+      }
+      const mon = rosterMeta.month.split(' ')[0];
+      roster.forEach((d, i) => {
+        if (i === currentIndex) { html += mainCardHtml(d); return; }
+        const past = i < currentIndex ? ' scroll-past' : '';
+        const noteMark = notesDB[d.date] ? '<span class="scroll-note">*</span>' : '';
+        html += `
+          <div class="upcoming-card type-${d.type}${past}" data-index="${i}" onclick="openScrollDay(${i})">
+            <div class="upcoming-date-info">
+              <span class="upcoming-day">${mon} ${d.date.split('-')[1]}</span>
+              <span class="upcoming-weekday">• ${d.day}</span>
+            </div>
+            <div class="upcoming-badge type-${d.type}">${d.title}${noteMark}</div>
+          </div>`;
+      });
+      area.innerHTML = html;
+      markPillOverflow();
+      updateTodayPill();
+      centerScrollOnCurrent(area);
+    }
+
+    function centerScrollOnCurrent(area) {
+      const main = document.getElementById('dailyCardElement');
+      if (!main) return;
+      requestAnimationFrame(() => {
+        const rect = main.getBoundingClientRect();
+        const areaRect = area.getBoundingClientRect();
+        area.scrollTop += (rect.top - areaRect.top) - (area.clientHeight - rect.height) / 2;
+      });
+    }
+
+    function openScrollDay(idx) {
+      idx = parseInt(idx);
+      if (isNaN(idx) || idx < 0 || idx >= roster.length || idx === currentIndex) return;
+      triggerHaptic(25);
+      const card = document.querySelector(`#daily-render-area .upcoming-card[data-index="${idx}"]`);
+      const done = () => { currentIndex = idx; renderScrollView(); };
+      if (card) { card.classList.add('scroll-tap'); setTimeout(done, 140); } else done();
     }
 
     function renderDailyView(direction, enterOnly) {
       const area = document.getElementById('daily-render-area');
+      if (NAV_MODE === 'stack') { renderScrollView(); return; }
+
       const toNext = direction === 'right';
 
       const enterArea = (startX) => {
@@ -1643,6 +1838,7 @@ EXAMPLE — follow this exact shape (replace the values):
       const swipeThreshold = 70;
 
       view.addEventListener('touchstart', (e) => {
+        if (NAV_MODE !== 'swipe') return;
         const t = e.touches[0];
         startX = t.clientX; startY = t.clientY;
         tracking = true; axisLocked = null;
@@ -1650,6 +1846,7 @@ EXAMPLE — follow this exact shape (replace the values):
       }, { passive: true });
 
       view.addEventListener('touchmove', (e) => {
+        if (NAV_MODE !== 'swipe') return;
         if (!tracking) return;
         const t = e.touches[0];
         const dx = t.clientX - startX;
@@ -1665,6 +1862,7 @@ EXAMPLE — follow this exact shape (replace the values):
       }, { passive: true });
 
       const endSwipe = (e) => {
+        if (NAV_MODE !== 'swipe') return;
         if (!tracking) return;
         tracking = false;
         const t = e.changedTouches[0];
@@ -1772,6 +1970,7 @@ EXAMPLE — follow this exact shape (replace the values):
 
     initTheme();
     initData();
+    initNavMode();
     currentIndex = realTodayIndex;
     renderDailyView();
     renderMonthView();
@@ -1782,7 +1981,7 @@ EXAMPLE — follow this exact shape (replace the values):
     initInstallPrompt();
 
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js?v=2').catch(() => {});
+      navigator.serviceWorker.register('./sw.js?v=3').catch(() => {});
     }
   </script>
 </body>
