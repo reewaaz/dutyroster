@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#f1f5f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#0b1220" media="(prefers-color-scheme: dark)">
   <meta name="color-scheme" content="light dark">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Crect%20width='100'%20height='100'%20rx='24'%20fill='%23f1f5f9'/%3E%3Ccircle%20cx='50'%20cy='50'%20r='34'%20fill='white'/%3E%3Ctext%20x='50'%20y='58'%20font-size='46'%20text-anchor='middle'%3E%F0%9F%A9%BA%3C/text%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0'%20y1='0'%20x2='1'%20y2='1'%3E%3Cstop%20offset='0'%20stop-color='%2338adf8'/%3E%3Cstop%20offset='1'%20stop-color='%230275d8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width='100'%20height='100'%20rx='25'%20fill='url(%23g)'/%3E%3Crect%20x='41'%20y='20'%20width='18'%20height='60'%20rx='9'%20fill='white'/%3E%3Crect%20x='20'%20y='41'%20width='60'%20height='18'%20rx='9'%20fill='white'/%3E%3C/svg%3E">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -26,12 +26,12 @@
       --accent: #0284c7;
       
       /* Color Palette */
-      --picu-day-bg: #f3e8ff; --picu-day-txt: #7e22ce;
-      --picu-24-bg: #ffe4e6; --picu-24-txt: #e11d48;
-      --opd-bg: #e0f2fe; --opd-txt: #0284c7;
-      --er-day-bg: #ffedd5; --er-day-txt: #c2410c;
-      --off-bg: #dcfce7; --off-txt: #15803d;
-      --post-off-bg: #f1f5f9; --post-off-txt: #475569;
+      --picu-day-bg: #f6efff; --picu-day-txt: #9a5cf0;
+      --picu-24-bg: #ffe9ec; --picu-24-txt: #f4617f;
+      --opd-bg: #e6f4ff; --opd-txt: #32a4e1;
+      --er-day-bg: #fff3e2; --er-day-txt: #f0823f;
+      --off-bg: #e3fbef; --off-txt: #2fb872;
+      --post-off-bg: #f4f7fb; --post-off-txt: #7c8ea5;
     }
 
     /* DARK MODE */
@@ -43,12 +43,12 @@
       --nav-bg: rgba(15, 26, 46, 0.92);
       --accent: #38bdf8;
 
-      --picu-day-bg: #271a38; --picu-day-txt: #d8b4fe;
-      --picu-24-bg: #341c22; --picu-24-txt: #fda4af;
-      --opd-bg: #0f2c45; --opd-txt: #7dd3fc;
-      --er-day-bg: #33230f; --er-day-txt: #fdba74;
-      --off-bg: #0f2a1c; --off-txt: #86efac;
-      --post-off-bg: #182235; --post-off-txt: #b6c3d4;
+      --picu-day-bg: #2c2040; --picu-day-txt: #dcc4ff;
+      --picu-24-bg: #3a222b; --picu-24-txt: #ffc1cd;
+      --opd-bg: #12364f; --opd-txt: #9adcff;
+      --er-day-bg: #382714; --er-day-txt: #ffd0a3;
+      --off-bg: #123724; --off-txt: #a7f3cf;
+      --post-off-bg: #1d2a3c; --post-off-txt: #c2cddc;
       color-scheme: dark;
     }
 
@@ -89,6 +89,7 @@
     .greeting { font-family: 'Inter', sans-serif; font-size: 12px; color: #64748b; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
     .title { font-size: 24px; font-weight: 900; color: #1e293b; letter-spacing: -0.5px; display: flex; align-items: center; gap: 8px; }
     :root[data-theme="dark"] .greeting { color: #8fa3bd; }
+    :root[data-theme="dark"] .title { color: #f1f5f9; }
 
     /* View Container */
     .view-container { 
@@ -203,6 +204,11 @@
     .second-call-name { font-size: 14px; font-weight: 900; color: #0f172a; }
     :root[data-theme="dark"] .second-call-label { color: #94a3b8; }
     :root[data-theme="dark"] .second-call-name { color: #f1f5f9; }
+
+    .hours-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 12px; background: rgba(255,255,255,0.6); border: 1px dashed rgba(2, 132, 199, 0.28); border-radius: 14px; }
+    :root[data-theme="dark"] .hours-row { background: rgba(56, 189, 248, 0.1); border-color: rgba(56, 189, 248, 0.28); }
+    .hours-label { font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .hours-value { font-size: 13px; font-weight: 900; color: var(--accent); text-align: right; }
 
     .card-note-badge { display: inline-flex; align-items: center; gap: 5px; background: #0f172a; color: white; padding: 5px 10px; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); margin-top: 4px; }
     :root[data-theme="dark"] .card-note-badge { background: #1e293b; color: #e2e8f0; }
@@ -391,6 +397,7 @@
     /* NOTE MODAL */
     .modal-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.35); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); z-index: 100; display: none; opacity: 0; transition: opacity 0.3s; justify-content: center; align-items: center; padding: 20px; }
     .modal-overlay.show { display: flex; opacity: 1; }
+    #note-modal { align-items: flex-start; padding-top: max(12vh, 70px); }
     .modal-card { background: white; width: 100%; max-width: 320px; border-radius: 28px; padding: 22px; transform: scale(0.9); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 16px 40px rgba(0,0,0,0.1); }
     :root[data-theme="dark"] .modal-card { background: #0f1a2e; }
     .modal-overlay.show .modal-card { transform: scale(1); }
@@ -430,6 +437,10 @@
 
     /* GENERATE ROSTER MODAL */
     .modal-card.roster-card { max-width: 380px; }
+    .install-card { max-width: 320px; text-align: center; }
+    .install-icon { font-size: 42px; margin-bottom: 6px; }
+    .install-title { font-size: 18px; font-weight: 900; margin-bottom: 6px; color: var(--text-main); }
+    .install-sub { font-size: 13px; font-weight: 700; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5; }
     .roster-steps { font-size: 12.5px; font-weight: 700; color: var(--text-muted); background: #f1f5f9; border-radius: 14px; padding: 10px 12px; margin-bottom: 12px; line-height: 1.6; }
     :root[data-theme="dark"] .roster-steps { background: #182235; }
     .roster-textarea { height: 170px; font-size: 12px; font-family: 'Courier New', monospace; white-space: pre; }
@@ -475,6 +486,9 @@
       background: linear-gradient(110deg, transparent 28%, rgba(255,255,255,0.55) 46%, rgba(255,255,255,0.7) 50%, rgba(255,255,255,0.55) 54%, transparent 72%);
       animation: shimmer 3s ease-in-out 0.8s infinite;
     }
+    :root[data-theme="dark"] .card.today.type-off::before {
+      background: linear-gradient(110deg, transparent 28%, rgba(255,255,255,0.06) 46%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.06) 54%, transparent 72%);
+    }
     .card.today.type-off > * { position: relative; z-index: 1; }
 
     .duty-row { transition: transform 0.15s ease, box-shadow 0.15s ease; }
@@ -484,7 +498,6 @@
 
     .badge { animation: popIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) backwards; animation-delay: 0.05s; }
     .card-note-badge { animation: breathe 2.4s ease-in-out 0.6s infinite; }
-    .today-pill.visible .pill-dot { animation: ringPulse 1.8s ease-out infinite; }
     .nav-item.active { animation: popScale 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) backwards; }
     #view-month.active .cal-cell { animation: popIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) backwards; }
     .modal-card { animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) backwards; animation-delay: 0.05s; }
@@ -541,7 +554,7 @@
       <div class="header-top">
         <div>
           <div class="greeting" id="greetingText">Good Morning,</div>
-          <div class="title">🍼 Dr. Mrinal <span style="font-size: 20px;">🩺</span></div>
+          <div class="title">🩺 Dr. Mrinal</div>
         </div>
         <div class="header-actions">
           <button class="icon-btn" id="notif-toggle" onclick="toggleDutyNotifs()" aria-label="Turn on duty alerts">🔕</button>
@@ -589,6 +602,19 @@
       </div>
       <button class="nav-arrow-btn" onclick="changeDay(1)" aria-label="Next Day">›</button>
     </nav>
+
+    <!-- INSTALL PROMPT -->
+    <div class="modal-overlay" id="install-modal">
+      <div class="modal-card install-card">
+        <div class="install-icon">🩺</div>
+        <div class="install-title">Install the Duty App</div>
+        <div class="install-sub">Add Dr. Mrinal Duty App to your home screen for offline access and quick one-tap opening — like a real app.</div>
+        <div class="modal-actions">
+          <button class="modal-btn btn-cancel" onclick="dismissInstallPrompt()">Not now</button>
+          <button class="modal-btn btn-save" onclick="installPwa()">Install</button>
+        </div>
+      </div>
+    </div>
 
     <!-- NOTE MODAL -->
     <div class="modal-overlay" id="note-modal">
@@ -941,6 +967,48 @@ EXAMPLE — follow this exact shape (replace the values):
       scheduleDutyAlerts();
     }
 
+    /* ---- PWA INSTALL PROMPT ---- */
+    let deferredPrompt = null;
+
+    function initInstallPrompt() {
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        if (!localStorage.getItem('mrinalInstallPrompted')) {
+          setTimeout(() => {
+            const modal = document.getElementById('install-modal');
+            if (modal && deferredPrompt) modal.classList.add('show');
+          }, 900);
+        }
+      });
+      window.addEventListener('appinstalled', () => {
+        localStorage.setItem('mrinalInstallPrompted', '1');
+        const modal = document.getElementById('install-modal');
+        if (modal) modal.classList.remove('show');
+        if (window.showToast) showToast('App installed 🎉');
+      });
+    }
+
+    function dismissInstallPrompt() {
+      localStorage.setItem('mrinalInstallPrompted', '1');
+      const modal = document.getElementById('install-modal');
+      if (modal) modal.classList.remove('show');
+    }
+
+    function installPwa() {
+      if (!deferredPrompt) {
+        dismissInstallPrompt();
+        return;
+      }
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(choice => {
+        deferredPrompt = null;
+        localStorage.setItem('mrinalInstallPrompted', '1');
+        const modal = document.getElementById('install-modal');
+        if (modal) modal.classList.remove('show');
+      });
+    }
+
     /* ---- DATA HELPERS ---- */
     function getRosterStart() {
       return new Date(rosterMeta.startDate + 'T00:00:00');
@@ -972,6 +1040,17 @@ EXAMPLE — follow this exact shape (replace the values):
       if (hour < 12) greeting = 'Good Morning,';
       else if (hour < 17) greeting = 'Good Afternoon,';
       document.getElementById('greetingText').innerText = greeting;
+    }
+
+    function getDutyHours(data) {
+      if (!data) return '';
+      if (data.type === 'off') return '';
+      if (data.type === 'post-off') return 'Ends after morning handover, conference & rounds';
+      if (data.type === 'picu-24') return '9 AM – 9 AM (24h duty)';
+      const wd = data.day;
+      if (wd === 'Fri') return '9 AM – 3 PM';
+      if (wd === 'Wed') return '9 AM – 1 PM';
+      return '9 AM – 5 PM';
     }
 
     function generateCard(data) {
@@ -1023,6 +1102,10 @@ EXAMPLE — follow this exact shape (replace the values):
       const secondCallHtml = data.second 
         ? `<div class="second-call"><span class="second-call-label">📞 2nd On Call</span><span class="second-call-name">${data.second}</span></div>` 
         : '';
+
+      const hoursHtml = getDutyHours(data)
+        ? `<div class="hours-row"><span class="hours-label">🕘 Duty Hours</span><span class="hours-value">${getDutyHours(data)}</span></div>`
+        : '';
       
       const savedNote = notesDB[data.date];
       const noteHtml = savedNote 
@@ -1047,7 +1130,7 @@ EXAMPLE — follow this exact shape (replace the values):
         if (upIdx < roster.length) {
           const upData = roster[upIdx];
           upcomingItems.push(`
-            <div class="upcoming-card type-${upData.type}" onclick="jumpToDate(${upIdx})">
+            <div class="upcoming-card type-${upData.type}" data-index="${upIdx}" onclick="jumpToDate(${upIdx})">
               <div class="upcoming-date-info">
                 <span class="upcoming-day">${rosterMeta.month.split(' ')[0]} ${upData.date.split('-')[1]}</span>
                 <span class="upcoming-weekday">• ${upData.day}</span>
@@ -1079,6 +1162,7 @@ EXAMPLE — follow this exact shape (replace the values):
           </div>
           
           <div class="card-body-content">
+            ${hoursHtml}
             ${detailsHtml}
             ${secondCallHtml}
           </div>
@@ -1581,23 +1665,46 @@ EXAMPLE — follow this exact shape (replace the values):
 
     function initCardLongPress() {
       const area = document.getElementById('daily-render-area');
-      let timer = null, sx = 0, sy = 0;
+      let timer = null, sx = 0, sy = 0, longPressed = false;
+
+      const openNoteForTarget = (e) => {
+        const targetCard = e.target.closest('.upcoming-card');
+        let dateKey;
+        if (targetCard && targetCard.dataset.index) {
+          const idx = Math.min(parseInt(targetCard.dataset.index), roster.length - 1);
+          dateKey = roster[idx].date;
+        } else {
+          dateKey = roster[currentIndex].date;
+        }
+        openNoteModal(dateKey);
+      };
 
       const start = (e) => {
         const t = e.touches ? e.touches[0] : e;
         sx = t.clientX; sy = t.clientY;
         if (timer) clearTimeout(timer);
-        timer = setTimeout(() => { timer = null; triggerHaptic(50); openNoteModal(roster[currentIndex].date); }, 400);
+        longPressed = false;
+        timer = setTimeout(() => {
+          timer = null; longPressed = true; triggerHaptic(50); openNoteForTarget(e);
+        }, 400);
       };
       const move = (e) => {
         if (!timer) return;
         const t = e.touches ? e.touches[0] : e;
         if (Math.abs(t.clientX - sx) > 12 || Math.abs(t.clientY - sy) > 12) { clearTimeout(timer); timer = null; }
       };
-      const end = () => { if (timer) { clearTimeout(timer); timer = null; } };
+      const end = (e) => {
+        if (timer) { clearTimeout(timer); timer = null; }
+        if (longPressed) {
+          longPressed = false;
+          e.preventDefault();
+          const stopTap = (ev) => { ev.stopPropagation(); ev.preventDefault(); };
+          document.addEventListener('click', stopTap, { capture: true, once: true });
+        }
+      };
       area.addEventListener('touchstart', start, { passive: true });
       area.addEventListener('touchmove', move, { passive: true });
-      area.addEventListener('touchend', end, { passive: true });
+      area.addEventListener('touchend', end);
       area.addEventListener('touchcancel', end, { passive: true });
       area.addEventListener('mousedown', start);
       area.addEventListener('mousemove', move);
@@ -1633,6 +1740,7 @@ EXAMPLE — follow this exact shape (replace the values):
     initCardLongPress();
     updateTodayPill();
     initDutyAlerts();
+    initInstallPrompt();
 
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js?v=2').catch(() => {});

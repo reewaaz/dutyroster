@@ -2,6 +2,7 @@
   "name": "Dr. Mrinal Duty App",
   "short_name": "Duty App",
   "description": "Monthly hospital duty roster for Dr. Mrinal — PICU, NICU, ER and OPD schedules.",
+  "id": "duty-roster",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
